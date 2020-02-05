@@ -5,8 +5,8 @@ $(document).ready(function () {
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
         center: [27.563054951207278, 53.901454446609534],
-        zoom: 11,
-        minZoom: 11,
+        zoom: 10.90,
+        minZoom: 10.90,
         attributionControl: false
     });
 
@@ -137,17 +137,8 @@ $(document).ready(function () {
     // Create a GeoJSON source with an empty lineString.
     var geojson = {
         "type": "FeatureCollection",
-        "features": [{
-            "type": "Feature",
-            "geometry": {
-                "type": "LineString",
-                "coordinates": []
-            }
-        }]
+        "features": []
     };
-
-    var startPoint = [27.47307399170134, 53.95097000106455]
-    var endPoint = [27.52078943603584, 53.95132860970111]
 
     var framesPerSecond = 20;
     var initialOpacity = 1
@@ -156,11 +147,11 @@ $(document).ready(function () {
     var radius = initialRadius;
     var maxRadius = 15;
 
-    var speedFactor = 100 // number of frames per longitude degree
+    var speedFactor = 25 // number of frames per longitude degree
     var animation; // to store and cancel the animation
 
 
-    map.on('load', function () {
+    map.on('load', async function () {
         map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
 
         map.addSource('points', {
@@ -257,14 +248,14 @@ $(document).ready(function () {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [27.596762012691784, 53.95262788574715]
+                            'coordinates': [27.596762012691784, 53.97262788574715]
                         }
                     },
                     {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [27.637796122302973, 53.949194592551294]
+                            'coordinates': [27.637796122302973, 53.969194592551294]
                         }
                     },
                     // 6
@@ -275,6 +266,13 @@ $(document).ready(function () {
                             'coordinates': [27.704922508801815, 53.93044212805984]
                         }
                     },
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [27.673934377188004, 53.859921373043164]
+                        }
+                    },  
                     // 7
                     {
                         'type': 'Feature',
@@ -287,21 +285,14 @@ $(document).ready(function () {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [27.47877178095783, 53.862118710423005]
+                            'coordinates': [27.46877178095783, 53.852118710423005]
                         }
                     },
                     {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [27.430390949657664, 53.911338937344766]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.673934377188004, 53.859921373043164]
+                            'coordinates': [27.410390949657664, 53.911338937344766]
                         }
                     },
                 ]
@@ -332,44 +323,92 @@ $(document).ready(function () {
             }
         });
 
-        var diffX = endPoint[0] - startPoint[0];
-        var diffY = endPoint[1] - startPoint[1];
-
-        var sfX = diffX / speedFactor;
-        var sfY = diffY / speedFactor;
-
-        var i = 0;
-        var j = 0;
-
-        var lineCoordinates = [];
-
-        while (i < diffX || Math.abs(j) < Math.abs(diffY)) {
-            lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
-
-            if (i < diffX) {
-                i += sfX;
-            }
-
-            if (Math.abs(j) < Math.abs(diffY)) {
-                j += sfY;
+        let emptyFeature = {
+            "type": "Feature",
+            "geometry": {
+                "type": "LineString",
+                "coordinates": []
             }
         }
 
-        console.log(lineCoordinates);
-
-        var animationCounter = 0;
-
-        function animateLine() {
-            if (animationCounter < lineCoordinates.length) {
-                geojson.features[0].geometry.coordinates.push(lineCoordinates[animationCounter]);
-                map.getSource('line-animation').setData(geojson);
-
-                requestAnimationFrame(animateLine);
-                animationCounter++;
+        let points = map.getSource('points');
+        for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
+            if (j == points._data.features.length) {
+                j = 0;
             }
+
+            geojson.features.push(emptyFeature);
+
+            await drawConnectionLine(
+                points._data.features[i].geometry.coordinates,
+                points._data.features[j].geometry.coordinates,
+                i
+            );
         }
 
-        animateLine();
+        function drawConnectionLine(start, end, feature) {
+            if (feature == 5) {
+                debugger;
+            }
+            let startPoint = [start[0], start[1]];
+            let endPoint = [end[0], end[1]];
+
+            let diffX = endPoint[0] - startPoint[0];
+            let diffY = endPoint[1] - startPoint[1];
+
+            let sfX = diffX / speedFactor;
+            let sfY = diffY / speedFactor;
+
+            let i = 0;
+            let j = 0;
+
+            let lineCoordinates = [];
+
+            if (diffX > 0) {
+                while (i < diffX || Math.abs(j) < Math.abs(diffY)) {
+                    lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
+
+                    if (i < diffX) {
+                        i += sfX;
+                    }
+    
+                    if (Math.abs(j) < Math.abs(diffY)) {
+                        j += sfY;
+                    }
+                }
+            } else {
+                while (i > diffX || Math.abs(j) < Math.abs(diffY)) {
+                    debugger;
+                    lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
+
+                    if (i > diffX) {
+                        i += sfX;
+                    }
+    
+                    if (Math.abs(j) < Math.abs(diffY)) {
+                        j += sfY;
+                    }
+                }
+            }
+
+            let animationCounter = 0;
+
+            return new Promise((resolve, reject) => {
+                function step() {
+                    if (animationCounter < lineCoordinates.length) {
+                        geojson.features[feature].geometry.coordinates.push(lineCoordinates[animationCounter]);
+                        map.getSource('line-animation').setData(geojson);
+
+                        requestAnimationFrame(step);
+                        animationCounter++;
+                    }
+                    else {
+                        resolve();
+                    }
+                }
+                requestAnimationFrame(step);
+            });
+        }
     });
 
     map.on('mousemove', function (e) {
