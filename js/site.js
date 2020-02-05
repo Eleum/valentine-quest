@@ -11,6 +11,7 @@ $(document).ready(function () {
     });
 
     var size = 150;
+    var speedFactor = 25;
 
     // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
     // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
@@ -80,76 +81,11 @@ $(document).ready(function () {
         }
     };
 
-    // debugger;
-    // var polyline = L.polyline([]).addTo(map);
-
-    // // add your points
-    // var points = [
-    //     {
-    //         "type": "Feature",
-    //         "geometry": {
-    //             "type": "Point",
-    //             "coordinates": [27.47307399170134, 53.95097000106455]
-    //         },
-    //         "properties": {}
-    //     },
-    //     {
-    //         "type": "Feature",
-    //         "geometry": {
-    //             "type": "Point",
-    //             "coordinates": [27.52078943603584, 53.95132860970111]
-    //         },
-    //         "properties": {}
-    //     },
-    //     {
-    //         "type": "Feature",
-    //         "geometry": {
-    //             "type": "Point",
-    //             "coordinates": [27.556421840925708, 53.94088200384468]
-    //         },
-    //         "properties": {}
-    //     }
-    // ]
-
-    // // add a variable for keeping track of points
-    // var y = 0;
-
-    // // Start drawing the polyline.
-    // add();
-
-    // function add() {
-
-    //     // add a point on the line for the new marker
-    //     polyline.addLatLng(
-    //         L.latLng(points[y].geometry.coordinates[1],
-    //             points[y].geometry.coordinates[0])
-    //     );
-
-
-    //     // Pan the map along with where the line is being added.
-    //     map.setView(points[y].geometry.coordinates, 3);
-
-    //     // Continue to draw and pan the map by calling `add()`
-    //     // until `y` reaches the number of points
-    //     if (++y < points.length) window.setTimeout(add, 1000);
-    // }
-
     // Create a GeoJSON source with an empty lineString.
     var geojson = {
         "type": "FeatureCollection",
         "features": []
     };
-
-    var framesPerSecond = 20;
-    var initialOpacity = 1
-    var opacity = initialOpacity;
-    var initialRadius = 4;
-    var radius = initialRadius;
-    var maxRadius = 15;
-
-    var speedFactor = 25 // number of frames per longitude degree
-    var animation; // to store and cancel the animation
-
 
     map.on('load', async function () {
         map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
@@ -159,70 +95,6 @@ $(document).ready(function () {
             'data': {
                 'type': 'FeatureCollection',
                 'features': [
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.518821384407858, 53.93200917348656]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.64614303695123, 53.931181804173264]
-                    //     }
-                    // },
-                    // home
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.5936424683064, 53.91032187347324]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.568568629161973, 53.88259620815066]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.484323896871246, 53.90801811424501]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.488175296105823, 53.909599627589415]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.57535711894309, 53.85792866840478]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.572075519850557, 53.93377672976908]
-                    //     }
-                    // },
-                    // {
-                    //     'type': 'Feature',
-                    //     'geometry': {
-                    //         'type': 'Point',
-                    //         'coordinates': [27.609492507709234, 53.92125454783536]
-                    //     }
-                    // },
                     {
                         'type': 'Feature',
                         'geometry': {
@@ -347,9 +219,6 @@ $(document).ready(function () {
         }
 
         function drawConnectionLine(start, end, feature) {
-            if (feature == 5) {
-                debugger;
-            }
             let startPoint = [start[0], start[1]];
             let endPoint = [end[0], end[1]];
 
