@@ -1,5 +1,9 @@
-
 $(document).ready(function () {
+    var bounds = [
+        [27.282656504916332, 53.8284771143484], // Southwest coordinates
+        [27.844537863849382, 54.00195438196859] // Northeast coordinates
+    ];
+
     mapboxgl.accessToken = 'pk.eyJ1IjoibmV2ZXJlbmQxbmciLCJhIjoiY2swaWR2d2Y3MGI5YjNjcW1ncGtuaXN4MCJ9.rQ4HN2r10RzPKeuO3TH06w';
     var map = new mapboxgl.Map({
         container: 'map',
@@ -7,6 +11,7 @@ $(document).ready(function () {
         center: [27.563054951207278, 53.901454446609534],
         zoom: 10.90,
         minZoom: 10.90,
+        maxBounds: bounds,
         attributionControl: false
     });
 
@@ -99,7 +104,7 @@ $(document).ready(function () {
                         'type': 'Feature',
                         'geometry': {
                             'type': 'Point',
-                            'coordinates': [27.47307399170134, 53.95097000106455]
+                            'coordinates': [27.47307399170134, 53.95398000106455]
                         }
                     },
                     {
@@ -144,7 +149,7 @@ $(document).ready(function () {
                             'type': 'Point',
                             'coordinates': [27.673934377188004, 53.859921373043164]
                         }
-                    },  
+                    },
                     // 7
                     {
                         'type': 'Feature',
@@ -240,20 +245,19 @@ $(document).ready(function () {
                     if (i < diffX) {
                         i += sfX;
                     }
-    
+
                     if (Math.abs(j) < Math.abs(diffY)) {
                         j += sfY;
                     }
                 }
             } else {
                 while (i > diffX || Math.abs(j) < Math.abs(diffY)) {
-                    debugger;
                     lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
 
                     if (i > diffX) {
                         i += sfX;
                     }
-    
+
                     if (Math.abs(j) < Math.abs(diffY)) {
                         j += sfY;
                     }
