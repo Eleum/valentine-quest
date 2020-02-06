@@ -16,7 +16,7 @@ $(document).ready(function () {
     });
 
     var size = 150;
-    var speedFactor = 25;
+    var speedFactor = 2;
 
     // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
     // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
@@ -88,6 +88,11 @@ $(document).ready(function () {
 
     // Create a GeoJSON source with an empty lineString.
     var geojson = {
+        "type": "FeatureCollection",
+        "features": []
+    };
+
+    var innerGeoJson = {
         "type": "FeatureCollection",
         "features": []
     };
@@ -200,19 +205,79 @@ $(document).ready(function () {
             }
         });
 
-        let emptyFeature = {
-            "type": "Feature",
-            "geometry": {
-                "type": "LineString",
-                "coordinates": []
+        let points = map.getSource('points');
+
+        let lngMin = -1;
+        let lngMax = -1;
+        let latMin = -1;
+        let latMax = -1;
+
+        function calculateMaxMin() {
+            const flattenLng = points._data.features.reduce(function (a, b) { return a.concat(b.geometry.coordinates[0]); }, []);
+            const flattenLat = points._data.features.reduce(function (a, b) { return a.concat(b.geometry.coordinates[1]); }, []);
+
+            function numbersSortAsc(a, b) {
+                return a - b;
+            }
+
+            flattenLng.sort(numbersSortAsc);
+            lngMin = flattenLng[0];
+            lngMax = flattenLng[flattenLng.length - 1];
+
+            flattenLat.sort(numbersSortAsc);
+            latMin = flattenLat[0];
+            latMax = flattenLat[flattenLat.length - 1];
+        }
+
+        function createRandomInnerPoints() {
+            for (var i = 0; i < 6; i++) {
+                const lng = parseFloat((Math.random() * (lngMax - lngMin) + lngMin).toFixed(15));
+                const lat = parseFloat((Math.random() * (latMax - latMin) + latMin).toFixed(15));
+
+                let emptyFeature = {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': []
+                    }
+                };
+
+                innerGeoJson.features.push(emptyFeature);
+                innerGeoJson.features[i].geometry.coordinates.push(lng, lat);
+
+                console.log(innerGeoJson.features[i].geometry.coordinates);
             }
         }
 
-        let points = map.getSource('points');
+        calculateMaxMin();
+        createRandomInnerPoints();
+        
+        map.addSource('inner-points', {
+            'type': 'geojson',
+            'data': innerGeoJson
+        });
+        map.addLayer({
+            'id': 'inner-points',
+            'type': 'circle',
+            'source': 'inner-points',
+            'paint': {
+                'circle-color': '#007cbf',
+                'circle-radius': 5
+            }
+        });
+
         for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
             if (j == points._data.features.length) {
                 j = 0;
             }
+
+            let emptyFeature = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": []
+                }
+            };
 
             geojson.features.push(emptyFeature);
 
@@ -264,6 +329,9 @@ $(document).ready(function () {
                 }
             }
 
+            // to make a line be complete
+            lineCoordinates.push([startPoint[0] + diffX, startPoint[1] + diffY]);
+
             let animationCounter = 0;
 
             return new Promise((resolve, reject) => {
@@ -294,7 +362,6 @@ $(document).ready(function () {
     });
 
     map.on('contextmenu', function (e) {
-        debugger;
         const el = document.createElement('textarea');
         el.value = `[${e.lngLat.lng}, ${e.lngLat.lat}]`;
         el.setAttribute('readonly', '');
@@ -313,4 +380,27 @@ $(document).ready(function () {
             document.getSelection().addRange(selected);
         }
     });
+
+    // function createGrid(size) {
+    //     debugger;
+    //     var ratioW = Math.floor($(window).width()/size),
+    //         ratioH = Math.floor($(window).height()/size);
+
+    //     var parent = $('<div />', {
+    //         class: 'grid', 
+    //         width: ratioW  * size, 
+    //         height: ratioH  * size
+    //     }).addClass('grid').appendTo('body');
+
+    //     for (var i = 0; i < ratioH; i++) {
+    //         for(var p = 0; p < ratioW; p++){
+    //             $('<div />', {
+    //                 width: size - 1, 
+    //                 height: size - 1
+    //             }).appendTo(parent);
+    //         }
+    //     }
+    // }
+
+    // createGrid(50);
 });
