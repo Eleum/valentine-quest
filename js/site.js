@@ -301,29 +301,14 @@ $(document).ready(function () {
         calculateMaxMin();
         generateRandomInnerPoints();
 
-
-        // var p = turf.randomPoint(30, { bbox: [latMin, lngMin, latMax, latMin] });
-
-        for (var i = 0; i < innerGeoJson.features.length; i++) {
-            innerGeoJson.features[i].properties.z = ~~(Math.random() * 9);
-        }
-
         var tin = turf.tin(innerGeoJson);
 
-        tin.features.forEach(function (d) {
-            innerGeoJson.features[i].properties.a = ~~(Math.random() * 9);
-            innerGeoJson.features[i].properties.b = ~~(Math.random() * 9);
-            innerGeoJson.features[i].properties.c = ~~(Math.random() * 9);
+        tin.features.forEach(function (feature) {
+            feature.properties.a = ~~(Math.random() * 9);
+            feature.properties.c = ~~(Math.random() * 9);
+            feature.properties.b = ~~(Math.random() * 9);
+            feature.properties.fill = '#' + feature.properties.a + feature.properties.b + feature.properties.c;
         });
-
-        // add each triangle with the right color
-        // tin.features.forEach(function (d) {
-        //     // create a hex color code from the z values the 3 triangle vertices
-        //     d.properties.fill = '#' + d.properties.a +
-        //         d.properties.b + d.properties.c;
-        // });
-
-        // debugger;
 
         map.addSource('tin', {
             'type': 'geojson',
@@ -336,7 +321,8 @@ $(document).ready(function () {
             'layout': {},
             'paint': {
                 // 'line-color': '#000',
-                'fill-color': '#088',
+                // 'fill-color': '#088',
+                'fill-color': ['get', 'fill'],
                 'fill-opacity': 0.8
             }
         });
