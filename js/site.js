@@ -180,6 +180,34 @@ $(document).ready(function () {
                 ]
             }
         });
+        map.addSource('polygon-area', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                [
+                                    [27.47307399170134, 53.95398000106455],
+                                    [27.52078943603584, 53.95132860970111],
+                                    [27.556421840925708, 53.94088200384468],
+                                    [27.596762012691784, 53.97262788574715],
+                                    [27.637796122302973, 53.969194592551294],
+                                    [27.704922508801815, 53.93044212805984],
+                                    [27.673934377188004, 53.859921373043164],
+                                    [27.574525802199076, 53.83548617934562],
+                                    [27.46877178095783, 53.852118710423005],
+                                    [27.410390949657664, 53.911338937344766]
+                                ]
+                            ]
+                        }
+                    },
+                ]
+            }
+        });
         map.addLayer({
             'id': 'points',
             'type': 'symbol',
@@ -204,6 +232,16 @@ $(document).ready(function () {
                 'line-width': 6
             }
         });
+        // map.addLayer({
+        //     'id': 'area',
+        //     'type': 'fill',
+        //     'source': 'polygon-area',
+        //     'layout': {},
+        //     'paint': {
+        //         'fill-color': '#088',
+        //         'fill-opacity': 0.8
+        //     }
+        // });
 
         let points = map.getSource('points');
 
@@ -229,29 +267,80 @@ $(document).ready(function () {
             latMax = flattenLat[flattenLat.length - 1];
         }
 
-        function createRandomInnerPoints() {
-            for (var i = 0; i < 6; i++) {
+        function generateRandomInnerPoints() {
+            const polygon = map.getSource('polygon-area')._data.features[0];
+
+            function generatePoint() {
                 const lng = parseFloat((Math.random() * (lngMax - lngMin) + lngMin).toFixed(15));
                 const lat = parseFloat((Math.random() * (latMax - latMin) + latMin).toFixed(15));
 
-                let emptyFeature = {
+                const point = {
                     'type': 'Feature',
+                    'properties': {},
                     'geometry': {
                         'type': 'Point',
                         'coordinates': []
                     }
                 };
+                point.geometry.coordinates.push(lng, lat);
 
-                innerGeoJson.features.push(emptyFeature);
-                innerGeoJson.features[i].geometry.coordinates.push(lng, lat);
+                const isInside = turf.inside(point, polygon)
 
-                console.log(innerGeoJson.features[i].geometry.coordinates);
+                if (isInside) {
+                    return point;
+                } else {
+                    return generatePoint();
+                }
+            }
+
+            for (var i = 0; i < 6; i++) {
+                innerGeoJson.features.push(generatePoint());
             }
         }
 
         calculateMaxMin();
-        createRandomInnerPoints();
-        
+        generateRandomInnerPoints();
+
+
+        // var p = turf.randomPoint(30, { bbox: [latMin, lngMin, latMax, latMin] });
+
+        for (var i = 0; i < innerGeoJson.features.length; i++) {
+            innerGeoJson.features[i].properties.z = ~~(Math.random() * 9);
+        }
+
+        var tin = turf.tin(innerGeoJson);
+
+        tin.features.forEach(function (d) {
+            innerGeoJson.features[i].properties.a = ~~(Math.random() * 9);
+            innerGeoJson.features[i].properties.b = ~~(Math.random() * 9);
+            innerGeoJson.features[i].properties.c = ~~(Math.random() * 9);
+        });
+
+        // add each triangle with the right color
+        // tin.features.forEach(function (d) {
+        //     // create a hex color code from the z values the 3 triangle vertices
+        //     d.properties.fill = '#' + d.properties.a +
+        //         d.properties.b + d.properties.c;
+        // });
+
+        // debugger;
+
+        map.addSource('tin', {
+            'type': 'geojson',
+            'data': tin
+        });
+        map.addLayer({
+            'id': 'tin',
+            'type': 'fill',
+            'source': 'tin',
+            'layout': {},
+            'paint': {
+                // 'line-color': '#000',
+                'fill-color': '#088',
+                'fill-opacity': 0.8
+            }
+        });
+
         map.addSource('inner-points', {
             'type': 'geojson',
             'data': innerGeoJson
@@ -329,7 +418,7 @@ $(document).ready(function () {
                 }
             }
 
-            // to make a line be complete
+            // to complete the line
             lineCoordinates.push([startPoint[0] + diffX, startPoint[1] + diffY]);
 
             let animationCounter = 0;
