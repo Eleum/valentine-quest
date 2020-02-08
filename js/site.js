@@ -97,7 +97,7 @@ $(document).ready(function () {
         'features': []
     };
 
-    var polygonGeoJson = {
+    var geoJsonHeartPolygon = {
         'type': 'FeatureCollection',
         'features': [
             {
@@ -115,7 +115,8 @@ $(document).ready(function () {
                             [27.673934377188004, 53.859921373043164],
                             [27.574525802199076, 53.83548617934562],
                             [27.46877178095783, 53.852118710423005],
-                            [27.410390949657664, 53.911338937344766]
+                            [27.410390949657664, 53.911338937344766],
+                            [27.47307399170134, 53.95398000106455]
                         ]
                     ]
                 }
@@ -210,7 +211,7 @@ $(document).ready(function () {
         });
         map.addSource('polygon-area', {
             'type': 'geojson',
-            'data': polygonGeoJson
+            'data': geoJsonHeartPolygon
         });
         map.addLayer({
             'id': 'points',
@@ -236,16 +237,6 @@ $(document).ready(function () {
                 'line-width': 6
             }
         });
-        // map.addLayer({
-        //     'id': 'area',
-        //     'type': 'fill',
-        //     'source': 'polygon-area',
-        //     'layout': {},
-        //     'paint': {
-        //         'fill-color': '#088',
-        //         'fill-opacity': 0.8
-        //     }
-        // });
 
         let points = map.getSource('points');
 
@@ -280,7 +271,6 @@ $(document).ready(function () {
 
                 const point = {
                     'type': 'Feature',
-                    'properties': {},
                     'geometry': {
                         'type': 'Point',
                         'coordinates': []
@@ -291,14 +281,13 @@ $(document).ready(function () {
                 const isInside = turf.inside(point, polygon)
 
                 if (isInside) {
-                    point.properties.z = ~~(Math.random() * 9);
                     return point;
                 } else {
                     return generatePoint();
                 }
             }
 
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < 3; i++) {
                 geoJsonInnerPoints.features.push(generatePoint());
             }
         }
@@ -306,24 +295,12 @@ $(document).ready(function () {
         calculateMaxMin();
         generateRandomInnerPoints();
 
-        var tin = turf.tin(geoJsonHeartPoints);
-
-        // tin.features.forEach(function (feature) {
-        //     feature.properties.a = ~~(Math.random() * 9);
-        //     feature.properties.c = ~~(Math.random() * 9);
-        //     feature.properties.b = ~~(Math.random() * 9);
-        //     feature.properties.fill = '#' + feature.properties.a + feature.properties.b + feature.properties.c;
-        // });
-
-        let a = polygonGeoJson;
+        let a = geoJsonHeartPolygon;
         let b = turf.bbox(a);
-        let c = turf.bboxPolygon(b);
-        
+
         let options = {
             'bbox': b
         }
-
-        debugger;
 
         let pointsForPolygons = {
             'type': 'FeatureCollection',
@@ -331,6 +308,14 @@ $(document).ready(function () {
         };
 
         let voronoiPolygons = turf.voronoi(pointsForPolygons, options);
+
+        function generateAreas(heartPolygon, voronoiPolygons) {
+            for (var i = 0; i < voronoiPolygons.features.length; i++) {
+                voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
+            }
+        }
+
+        generateAreas(geoJsonHeartPolygon.features[0], voronoiPolygons);
 
         map.addSource('bbox', {
             'type': 'geojson',
@@ -346,9 +331,9 @@ $(document).ready(function () {
             'layout': {},
             'paint': {
                 // 'line-color': '#000',
-                'fill-color': '#000',
                 // 'fill-color': '#088',
                 // 'fill-color': ['get', 'fill'],
+                'fill-color': '#000',
                 'fill-opacity': 0.2
             }
         });
@@ -366,7 +351,15 @@ $(document).ready(function () {
                 'fill-opacity': 0.3
             }
         });
-
+        map.addLayer({
+            'id': 'voronoi-lines',
+            'type': 'line',
+            'source': 'voronoi',
+            'layout': {},
+            'paint': {
+                'line-width': 1
+            }
+        });
         map.addSource('inner-points', {
             'type': 'geojson',
             'data': geoJsonInnerPoints
@@ -380,6 +373,37 @@ $(document).ready(function () {
                 'circle-radius': 5
             }
         });
+        // map.addSource('heart-polygon', {
+        //     'type': 'geojson',
+        //     'data': geoJsonHeartPolygon
+        // });
+        // map.addLayer({
+        //     'id': 'heart-polygon',
+        //     'type': 'fill',
+        //     'source': 'heart-polygon',
+        //     'layout': {},
+        //     'paint': {
+        //         'fill-color': '#088',
+        //         'fill-opacity': 0.9
+        //     }
+        // });
+        // map.addSource('intersected-polygons', {
+        //     'type': 'geojson',
+        //     'data': {
+        //         'type': 'FeatureCollection',
+        //         'features': [int]
+        //     }
+        // });
+        // map.addLayer({
+        //     'id': 'intersected-polygons',
+        //     'source': 'intersected-polygons',
+        //     'type': 'fill',
+        //     'layout': {},
+        //     'paint': {
+        //         'fill-color': '#f00',
+        //         'fill-opacity': 0.7
+        //     }
+        // });
 
         for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
             if (j == points._data.features.length) {
