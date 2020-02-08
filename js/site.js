@@ -88,13 +88,117 @@ $(document).ready(function () {
 
     // Create a GeoJSON source with an empty lineString.
     var geojson = {
-        "type": "FeatureCollection",
-        "features": []
+        'type': 'FeatureCollection',
+        'features': []
     };
 
-    var innerGeoJson = {
-        "type": "FeatureCollection",
-        "features": []
+    var geoJsonInnerPoints = {
+        'type': 'FeatureCollection',
+        'features': []
+    };
+
+    var polygonGeoJson = {
+        'type': 'FeatureCollection',
+        'features': [
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': [
+                        [
+                            [27.47307399170134, 53.95398000106455],
+                            [27.52078943603584, 53.95132860970111],
+                            [27.556421840925708, 53.94088200384468],
+                            [27.596762012691784, 53.97262788574715],
+                            [27.637796122302973, 53.969194592551294],
+                            [27.704922508801815, 53.93044212805984],
+                            [27.673934377188004, 53.859921373043164],
+                            [27.574525802199076, 53.83548617934562],
+                            [27.46877178095783, 53.852118710423005],
+                            [27.410390949657664, 53.911338937344766]
+                        ]
+                    ]
+                }
+            },
+        ]
+    };
+
+    var geoJsonHeartPoints = {
+        'type': 'FeatureCollection',
+        'features': [
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.47307399170134, 53.95398000106455]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.52078943603584, 53.95132860970111]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.556421840925708, 53.94088200384468]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.596762012691784, 53.97262788574715]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.637796122302973, 53.969194592551294]
+                }
+            },
+            // 6
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.704922508801815, 53.93044212805984]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.673934377188004, 53.859921373043164]
+                }
+            },
+            // 7
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.574525802199076, 53.83548617934562]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.46877178095783, 53.852118710423005]
+                }
+            },
+            {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [27.410390949657664, 53.911338937344766]
+                }
+            },
+        ]
     };
 
     map.on('load', async function () {
@@ -102,111 +206,11 @@ $(document).ready(function () {
 
         map.addSource('points', {
             'type': 'geojson',
-            'data': {
-                'type': 'FeatureCollection',
-                'features': [
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.47307399170134, 53.95398000106455]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.52078943603584, 53.95132860970111]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.556421840925708, 53.94088200384468]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.596762012691784, 53.97262788574715]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.637796122302973, 53.969194592551294]
-                        }
-                    },
-                    // 6
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.704922508801815, 53.93044212805984]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.673934377188004, 53.859921373043164]
-                        }
-                    },
-                    // 7
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.574525802199076, 53.83548617934562]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.46877178095783, 53.852118710423005]
-                        }
-                    },
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [27.410390949657664, 53.911338937344766]
-                        }
-                    },
-                ]
-            }
+            'data': geoJsonHeartPoints
         });
         map.addSource('polygon-area', {
             'type': 'geojson',
-            'data': {
-                'type': 'FeatureCollection',
-                'features': [
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Polygon',
-                            'coordinates': [
-                                [
-                                    [27.47307399170134, 53.95398000106455],
-                                    [27.52078943603584, 53.95132860970111],
-                                    [27.556421840925708, 53.94088200384468],
-                                    [27.596762012691784, 53.97262788574715],
-                                    [27.637796122302973, 53.969194592551294],
-                                    [27.704922508801815, 53.93044212805984],
-                                    [27.673934377188004, 53.859921373043164],
-                                    [27.574525802199076, 53.83548617934562],
-                                    [27.46877178095783, 53.852118710423005],
-                                    [27.410390949657664, 53.911338937344766]
-                                ]
-                            ]
-                        }
-                    },
-                ]
-            }
+            'data': polygonGeoJson
         });
         map.addLayer({
             'id': 'points',
@@ -287,49 +291,85 @@ $(document).ready(function () {
                 const isInside = turf.inside(point, polygon)
 
                 if (isInside) {
+                    point.properties.z = ~~(Math.random() * 9);
                     return point;
                 } else {
                     return generatePoint();
                 }
             }
 
-            for (var i = 0; i < 6; i++) {
-                innerGeoJson.features.push(generatePoint());
+            for (var i = 0; i < 4; i++) {
+                geoJsonInnerPoints.features.push(generatePoint());
             }
         }
 
         calculateMaxMin();
         generateRandomInnerPoints();
 
-        var tin = turf.tin(innerGeoJson);
+        var tin = turf.tin(geoJsonHeartPoints);
 
-        tin.features.forEach(function (feature) {
-            feature.properties.a = ~~(Math.random() * 9);
-            feature.properties.c = ~~(Math.random() * 9);
-            feature.properties.b = ~~(Math.random() * 9);
-            feature.properties.fill = '#' + feature.properties.a + feature.properties.b + feature.properties.c;
-        });
+        // tin.features.forEach(function (feature) {
+        //     feature.properties.a = ~~(Math.random() * 9);
+        //     feature.properties.c = ~~(Math.random() * 9);
+        //     feature.properties.b = ~~(Math.random() * 9);
+        //     feature.properties.fill = '#' + feature.properties.a + feature.properties.b + feature.properties.c;
+        // });
 
-        map.addSource('tin', {
+        let a = polygonGeoJson;
+        let b = turf.bbox(a);
+        let c = turf.bboxPolygon(b);
+        
+        let options = {
+            'bbox': b
+        }
+
+        debugger;
+
+        let pointsForPolygons = {
+            'type': 'FeatureCollection',
+            'features': geoJsonHeartPoints.features.concat(geoJsonInnerPoints.features)
+        };
+
+        let voronoiPolygons = turf.voronoi(pointsForPolygons, options);
+
+        map.addSource('bbox', {
             'type': 'geojson',
-            'data': tin
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [b]
+            }
         });
         map.addLayer({
-            'id': 'tin',
+            'id': 'bbox',
             'type': 'fill',
-            'source': 'tin',
+            'source': 'bbox',
             'layout': {},
             'paint': {
                 // 'line-color': '#000',
+                'fill-color': '#000',
                 // 'fill-color': '#088',
-                'fill-color': ['get', 'fill'],
-                'fill-opacity': 0.8
+                // 'fill-color': ['get', 'fill'],
+                'fill-opacity': 0.2
+            }
+        });
+        map.addSource('voronoi', {
+            'type': 'geojson',
+            'data': voronoiPolygons
+        });
+        map.addLayer({
+            'id': 'voronoi',
+            'type': 'fill',
+            'source': 'voronoi',
+            'layout': {},
+            'paint': {
+                'fill-color': '#000',
+                'fill-opacity': 0.3
             }
         });
 
         map.addSource('inner-points', {
             'type': 'geojson',
-            'data': innerGeoJson
+            'data': geoJsonInnerPoints
         });
         map.addLayer({
             'id': 'inner-points',
