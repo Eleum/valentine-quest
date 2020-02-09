@@ -5,13 +5,13 @@ $('#app-key-modal').on('shown.bs.modal', function () {
 function showToast() {
     setTimeout(() => {
         $('.toast').toast('show');
-      }, 0)
+    }, 0);
 }
 
 $(document).ready(function () {
     var bounds = [
-        [27.282656504916332, 53.8284771143484], // Southwest coordinates
-        [27.844537863849382, 54.00195438196859] // Northeast coordinates
+        [26.955186661198155, 53.76002532703791], // Southwest coordinates
+        [28.067600169786317, 54.08218624607514] // Northeast coordinates
     ];
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibmV2ZXJlbmQxbmciLCJhIjoiY2swaWR2d2Y3MGI5YjNjcW1ncGtuaXN4MCJ9.rQ4HN2r10RzPKeuO3TH06w';
@@ -20,7 +20,7 @@ $(document).ready(function () {
         style: 'mapbox://styles/mapbox/streets-v9',
         center: [27.563054951207278, 53.901454446609534],
         zoom: 10.90,
-        minZoom: 10.90,
+        minZoom: 10,
         maxBounds: bounds,
         attributionControl: false
     });
@@ -458,14 +458,67 @@ $(document).ready(function () {
             const selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
                 return turf.inside(point, polygon);
             });
-            
-            const coordinates = point.geometry.coordinates.slice();
-            const description = `<strong>Completion: ${selectedArea.properties.completion}</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>`;
+
+            const center = turf.centerOfMass(selectedArea);
+            const coordinates = center.geometry.coordinates.slice();
+            map.flyTo({
+                center: center.geometry.coordinates,
+                essential: true // this animation is considered essential with respect to prefers-reduced-motion
+            });
+
+            // const description = `<strong>Completion: ${selectedArea.properties.completion}</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>`;
+            const description = `<strong>Completion: ${selectedArea.properties.completion}</strong>
+            <div class="container">
+        <div class="row">
+            <div class="progress mx-auto" data-value='55'>
+                <span class="progress-left">
+                    <span class="progress-bar border-primary"></span>
+                </span>
+                <span class="progress-right">
+                    <span class="progress-bar border-primary"></span>
+                </span>
+                <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+                    <div class="h4 font-weight-bold m-0">55<sup class="small">%</sup></div>
+                </div>
+            </div>
+            <button class="btn btn-link">Add images</button>
+            <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Card title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                            the card's
+                            content.</p>
+                        <!-- <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                </div>
+        </div>
+    </div>`;
 
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
                 .setHTML(description)
                 .addTo(map);
+
+            $(".progress").each(function () {
+                var value = $(this).attr('data-value');
+                var left = $(this).find('.progress-left .progress-bar');
+                var right = $(this).find('.progress-right .progress-bar');
+
+                if (value > 0) {
+                    if (value <= 50) {
+                        right.css('transform', 'rotate(' + percentageToDegrees(value) + 'deg)')
+                    } else {
+                        right.css('transform', 'rotate(180deg)')
+                        left.css('transform', 'rotate(' + percentageToDegrees(value - 50) + 'deg)')
+                    }
+                }
+            });
+
+            function percentageToDegrees(percentage) {
+                return percentage / 100 * 360
+            }
         });
 
         for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
