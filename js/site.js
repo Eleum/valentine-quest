@@ -307,7 +307,7 @@ $(document).ready(function () {
             'features': geoJsonHeartPoints.features.concat(geoJsonInnerPoints.features)
         };
 
-        let voronoiPolygons = turf.voronoi(pointsForPolygons, options);
+        let polygonsAreas = turf.voronoi(pointsForPolygons, options);
 
         function generateAreas(heartPolygon, voronoiPolygons) {
             for (var i = 0; i < voronoiPolygons.features.length; i++) {
@@ -315,7 +315,9 @@ $(document).ready(function () {
             }
         }
 
-        generateAreas(geoJsonHeartPolygon.features[0], voronoiPolygons);
+        generateAreas(geoJsonHeartPolygon.features[0], polygonsAreas);
+
+        // FEATUREEACH
 
         map.addSource('bbox', {
             'type': 'geojson',
@@ -337,14 +339,14 @@ $(document).ready(function () {
                 'fill-opacity': 0.2
             }
         });
-        map.addSource('voronoi', {
+        map.addSource('areas', {
             'type': 'geojson',
-            'data': voronoiPolygons
+            'data': polygonsAreas
         });
         map.addLayer({
-            'id': 'voronoi',
+            'id': 'areas',
             'type': 'fill',
-            'source': 'voronoi',
+            'source': 'areas',
             'layout': {},
             'paint': {
                 'fill-color': '#000',
@@ -352,9 +354,9 @@ $(document).ready(function () {
             }
         });
         map.addLayer({
-            'id': 'voronoi-lines',
+            'id': 'areas-lines',
             'type': 'line',
-            'source': 'voronoi',
+            'source': 'areas',
             'layout': {},
             'paint': {
                 'line-width': 1
@@ -404,6 +406,55 @@ $(document).ready(function () {
         //         'fill-opacity': 0.7
         //     }
         // });
+
+        map.on('mouseenter', 'areas', function () {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'areas', function () {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.on('click', 'areas', function (e) {
+            const point = {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': []
+                }
+            };
+            point.geometry.coordinates.push(e.lngLat.lng, e.lngLat.lat);
+
+            let selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
+                return turf.inside(point, polygon);
+            })
+
+            let center = turf.centerOfMass(selectedArea)
+
+            const description = '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>';
+
+            new mapboxgl.Popup()
+                .setLngLat(center.geometry.coordinates.slice())
+                .setHTML(description)
+                .addTo(map);
+
+            // var coordinates = e.features[0].geometry.coordinates.slice();
+            // var description = e.features[0].properties.description;
+
+            // // Ensure that if the map is zoomed out such that multiple
+            // // copies of the feature are visible, the popup appears
+            // // over the copy being pointed to.
+            // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            // }
+
+            // new mapboxgl.Popup()
+            //     .setLngLat(coordinates)
+            //     .setHTML(description)
+            //     .addTo(map);
+        });
 
         for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
             if (j == points._data.features.length) {
