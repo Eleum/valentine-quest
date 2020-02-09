@@ -2,6 +2,12 @@ $('#app-key-modal').on('shown.bs.modal', function () {
     $('#app-key-input').trigger('focus')
 });
 
+function showToast() {
+    setTimeout(() => {
+        $('.toast').toast('show');
+      }, 0)
+}
+
 $(document).ready(function () {
     var bounds = [
         [27.282656504916332, 53.8284771143484], // Southwest coordinates
@@ -208,8 +214,7 @@ $(document).ready(function () {
 
     map.on('load', async function () {
         map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-
-        map.addSource('points', {
+        map.addSource('heart-points', {
             'type': 'geojson',
             'data': geoJsonHeartPoints
         });
@@ -218,9 +223,9 @@ $(document).ready(function () {
             'data': geoJsonHeartPolygon
         });
         map.addLayer({
-            'id': 'points',
+            'id': 'heart-points',
             'type': 'symbol',
-            'source': 'points',
+            'source': 'heart-points',
             'layout': {
                 'icon-image': 'pulsing-dot'
             }
@@ -242,7 +247,7 @@ $(document).ready(function () {
             }
         });
 
-        let points = map.getSource('points');
+        let points = map.getSource('heart-points');
 
         let lngMin = -1;
         let lngMax = -1;
@@ -316,13 +321,12 @@ $(document).ready(function () {
         function generateAreas(heartPolygon, voronoiPolygons) {
             for (var i = 0; i < voronoiPolygons.features.length; i++) {
                 voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
-                voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 9);
+                voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 10) * 10;
+                // voronoiPolygons.features[i].properties.completion = 10;
             }
         }
 
         generateAreas(geoJsonHeartPolygon.features[0], polygonsAreas);
-
-        // FEATUREEACH
 
         map.addSource('bbox', {
             'type': 'geojson',
@@ -361,7 +365,7 @@ $(document).ready(function () {
                         ['var', 'completionPercentage'],
                         0,
                         ['to-color', '#ffebeb'],
-                        10,
+                        100,
                         ['to-color', '#ff3334']
                     ]
                 ],
@@ -374,8 +378,8 @@ $(document).ready(function () {
                         ['linear'],
                         ['var', 'completionPercentage'],
                         0,
-                        0.1,
-                        10,
+                        0.3,
+                        100,
                         1
                     ]
                 ]
@@ -394,15 +398,15 @@ $(document).ready(function () {
             'type': 'geojson',
             'data': geoJsonInnerPoints
         });
-        map.addLayer({
-            'id': 'inner-points',
-            'type': 'circle',
-            'source': 'inner-points',
-            'paint': {
-                'circle-color': '#007cbf',
-                'circle-radius': 5
-            }
-        });
+        // map.addLayer({
+        //     'id': 'inner-points',
+        //     'type': 'circle',
+        //     'source': 'inner-points',
+        //     'paint': {
+        //         'circle-color': '#007cbf',
+        //         'circle-radius': 5
+        //     }
+        // });
         // map.addSource('heart-polygon', {
         //     'type': 'geojson',
         //     'data': geoJsonHeartPolygon
@@ -454,9 +458,9 @@ $(document).ready(function () {
             const selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
                 return turf.inside(point, polygon);
             });
-
+            
             const coordinates = point.geometry.coordinates.slice();
-            const description = '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>';
+            const description = `<strong>Completion: ${selectedArea.properties.completion}</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>`;
 
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
