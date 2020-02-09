@@ -410,13 +410,9 @@ $(document).ready(function () {
         map.on('mouseenter', 'areas', function () {
             map.getCanvas().style.cursor = 'pointer';
         });
-
         map.on('mouseleave', 'areas', function () {
             map.getCanvas().style.cursor = '';
         });
-
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
         map.on('click', 'areas', function (e) {
             const point = {
                 'type': 'Feature',
@@ -427,16 +423,15 @@ $(document).ready(function () {
             };
             point.geometry.coordinates.push(e.lngLat.lng, e.lngLat.lat);
 
-            let selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
+            const selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
                 return turf.inside(point, polygon);
             });
 
-            let center = turf.centerOfMass(selectedArea);
-
+            const coordinates = point.geometry.coordinates.slice();
             const description = '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>';
 
             new mapboxgl.Popup()
-                .setLngLat(center.geometry.coordinates.slice())
+                .setLngLat(coordinates)
                 .setHTML(description)
                 .addTo(map);
         });
