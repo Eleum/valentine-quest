@@ -316,6 +316,7 @@ $(document).ready(function () {
         function generateAreas(heartPolygon, voronoiPolygons) {
             for (var i = 0; i < voronoiPolygons.features.length; i++) {
                 voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
+                voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 9);
             }
         }
 
@@ -336,9 +337,6 @@ $(document).ready(function () {
             'source': 'bbox',
             'layout': {},
             'paint': {
-                // 'line-color': '#000',
-                // 'fill-color': '#088',
-                // 'fill-color': ['get', 'fill'],
                 'fill-color': '#000',
                 'fill-opacity': 0.2
             }
@@ -353,8 +351,34 @@ $(document).ready(function () {
             'source': 'areas',
             'layout': {},
             'paint': {
-                'fill-color': '#000',
-                'fill-opacity': 0.3
+                'fill-color': [
+                    'let',
+                    'completionPercentage',
+                    ['get', 'completion'],
+                    [
+                        'interpolate',
+                        ['linear'],
+                        ['var', 'completionPercentage'],
+                        0,
+                        ['to-color', '#ffebeb'],
+                        10,
+                        ['to-color', '#ff3334']
+                    ]
+                ],
+                'fill-opacity': [
+                    'let',
+                    'completionPercentage',
+                    ['get', 'completion'],
+                    [
+                        'interpolate',
+                        ['linear'],
+                        ['var', 'completionPercentage'],
+                        0,
+                        0.1,
+                        10,
+                        1
+                    ]
+                ]
             }
         });
         map.addLayer({
