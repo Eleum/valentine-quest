@@ -1,3 +1,7 @@
+$('#app-key-modal').on('shown.bs.modal', function () {
+    $('#app-key-input').trigger('focus')
+});
+
 $(document).ready(function () {
     var bounds = [
         [27.282656504916332, 53.8284771143484], // Southwest coordinates
