@@ -429,9 +429,9 @@ $(document).ready(function () {
 
             let selectedArea = map.getSource('areas')._data.features.find(function (polygon) {
                 return turf.inside(point, polygon);
-            })
+            });
 
-            let center = turf.centerOfMass(selectedArea)
+            let center = turf.centerOfMass(selectedArea);
 
             const description = '<strong>Muhsinah</strong><p>Jazz-influenced hip hop artist <a href="http://www.muhsinah.com" target="_blank" title="Opens in a new window">Muhsinah</a> plays the <a href="http://www.blackcatdc.com">Black Cat</a> (1811 14th Street NW) tonight with <a href="http://www.exitclov.com" target="_blank" title="Opens in a new window">Exit Clov</a> and <a href="http://godsilla.bandcamp.com" target="_blank" title="Opens in a new window">Gods’illa</a>. 9:00 p.m. $12.</p>';
 
@@ -439,21 +439,6 @@ $(document).ready(function () {
                 .setLngLat(center.geometry.coordinates.slice())
                 .setHTML(description)
                 .addTo(map);
-
-            // var coordinates = e.features[0].geometry.coordinates.slice();
-            // var description = e.features[0].properties.description;
-
-            // // Ensure that if the map is zoomed out such that multiple
-            // // copies of the feature are visible, the popup appears
-            // // over the copy being pointed to.
-            // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            // }
-
-            // new mapboxgl.Popup()
-            //     .setLngLat(coordinates)
-            //     .setHTML(description)
-            //     .addTo(map);
         });
 
         for (var i = 0, j = i + 1; i < points._data.features.length; i++ , j++) {
