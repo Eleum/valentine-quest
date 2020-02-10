@@ -28,6 +28,10 @@ body {
   transition: opacity 0.5s linear !important;
 }
 
+.mapboxgl-map {
+  font: inherit;
+}
+
 .progress {
   width: 100px;
   height: 100px;
