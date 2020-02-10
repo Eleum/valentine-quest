@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DebugEventListener } from '@angular/core';
 import * as $ from 'jquery';
 
 declare var $: $;
@@ -11,7 +11,6 @@ declare var turf: any;
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-    title = 'valentine';
     files = [];
 
     ngOnInit() {
@@ -445,13 +444,14 @@ export class AppComponent implements OnInit {
                                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of
                                     the card's
                                     content.</p>
-                                <a href="#" class="card-link">Add images</a>
+                                <button class="btn btn-link" id="add-images-button">Add images</button>
+                                <input id="images-input" type="file" (change)="onAddFiles($event)" multiple hidden/>
                             </div>
                         </div>
                     </div>
                 </div>`;
 
-                new mapboxgl.Popup({ className: 'inherit-close' })
+                new mapboxgl.Popup()
                     .setLngLat(coordinates)
                     .setHTML(description)
                     .addTo(map);
@@ -462,6 +462,10 @@ export class AppComponent implements OnInit {
                     .css('font-weight', '700')
                     .css('line-height', '1')
                     .css('opacity', '0.5');
+
+                $('#add-images-button').on('click', () => {
+                    $('#images-input').trigger('click');
+                });
 
                 $('.progress').each(() => {
                     const value = $(this).attr('data-value');
@@ -603,6 +607,11 @@ export class AppComponent implements OnInit {
         setTimeout(() => {
             $('.toast').toast('show');
         }, 0);
+    }
+
+    public addFiles() {
+        debugger;
+        $('#images-input').trigger('click');
     }
 
     public onAddFiles(e: any) {
