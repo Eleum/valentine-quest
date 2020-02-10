@@ -610,7 +610,6 @@ export class AppComponent implements OnInit {
     }
 
     public addFiles() {
-        debugger;
         $('#images-input').trigger('click');
     }
 
