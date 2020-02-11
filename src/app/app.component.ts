@@ -1,4 +1,6 @@
-import { Component, OnInit, DebugEventListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import * as $ from 'jquery';
 
 declare var $: $;
@@ -11,7 +13,9 @@ declare var turf: any;
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-    files = [];
+    files: File[] = [];
+
+    constructor(private http: HttpClient) { }
 
     ngOnInit() {
         $('#app-key-modal').on('shown.bs.modal', () => {
@@ -445,7 +449,8 @@ export class AppComponent implements OnInit {
                                     the card's
                                     content.</p>
                                 <button class="btn btn-link" id="add-images-button">Add images</button>
-                                <input id="images-input" type="file" (change)="onAddFiles($event)" multiple hidden/>
+                                <button class="btn btn-link" id="upload-images-button">Upload images</button>
+                                <input id="images-input" type="file" multiple hidden/>
                             </div>
                         </div>
                     </div>
@@ -465,6 +470,18 @@ export class AppComponent implements OnInit {
 
                 $('#add-images-button').on('click', () => {
                     $('#images-input').trigger('click');
+                });
+
+                $('#images-input').on('change', (event: any) => {
+                    this.onAddFiles(event);
+                });
+
+                $('#upload-images-button').on('click', () => {
+                    this.uploadFiles().subscribe(result => {
+                        console.log('uploaded');
+                    }, err => {
+                        console.error(err);
+                    });
                 });
 
                 $('.progress').each(() => {
@@ -609,10 +626,6 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
-    public addFiles() {
-        $('#images-input').trigger('click');
-    }
-
     public onAddFiles(e: any) {
         if (e.target.files && e.target.files[0]) {
             const filesCount = e.target.files.length;
@@ -624,5 +637,14 @@ export class AppComponent implements OnInit {
 
     public removeFile(idx: number) {
         this.files.splice(idx, 1);
+    }
+
+    public uploadFiles(): Observable<any> {
+        const formData = new FormData();
+        this.files.forEach((file: File) => {
+            formData.append('images', file);
+        });
+
+        return this.http.post('https://localhost:44394/api/images', formData);
     }
 }
