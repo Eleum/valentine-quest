@@ -8,8 +8,8 @@ namespace Valentine.Domain
     {
         public Guid Id { get; set; }
 
-        public List<Guid> ImagesIds { get; set; } = new List<Guid>();
+        public List<Image> Images { get; set; } = new List<Image>();
 
-        public double Progress => ImagesIds.Count == 0 ? 0 : ImagesIds.Count / 100; 
+        public double Progress => Images.Count == 0 ? 0 : Images.Count / 100; 
     }
 }
