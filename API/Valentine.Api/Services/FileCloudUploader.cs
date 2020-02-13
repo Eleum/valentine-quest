@@ -22,7 +22,6 @@ namespace Valentine.Api.Services
             blob.Properties.ContentType = contentType;
 
             await blob.UploadFromByteArrayAsync(fileBytes, 0, fileBytes.Length);
-
             return blob.Uri.ToString();
         }
     }
