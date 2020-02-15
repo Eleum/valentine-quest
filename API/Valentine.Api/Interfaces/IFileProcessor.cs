@@ -8,6 +8,6 @@ namespace Valentine.Api.Interfaces
 {
     public interface IFileProcessor
     {
-        byte[] ConvertImageToByteArray(IFormFile file);
+        byte[] ConvertFileToByteArray(IFormFile file);
     }
 }

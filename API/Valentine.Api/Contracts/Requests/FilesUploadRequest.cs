@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Valentine.Api.Contracts.Requests
 {
-    public class ImagesUploadRequest
+    public class FilesUploadRequest
     {
-        public IFormFile[] Images { get; set; }
+        public IFormFile[] Files { get; set; }
+        
+        public string[] Ids { get; set; }
     }
 }

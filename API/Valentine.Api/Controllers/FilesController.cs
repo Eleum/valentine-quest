@@ -10,12 +10,12 @@ namespace Valentine.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ImagesController : ControllerBase
+    public class FilesController : ControllerBase
     {
         private readonly IFileProcessor _fileProcessor;
         private readonly IFileCloudUploader _uploader;
 
-        public ImagesController(IFileProcessor fileProcessor, IFileCloudUploader uploader)
+        public FilesController(IFileProcessor fileProcessor, IFileCloudUploader uploader)
         {
             _fileProcessor = fileProcessor;
             _uploader = uploader;
@@ -29,12 +29,14 @@ namespace Valentine.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SaveImages([FromForm]ImagesUploadRequest request)
+        public async Task<IActionResult> SaveFiles([FromForm]FilesUploadRequest request)
         {
-            foreach (var image in request.Images)
+            for (int i = 0; i < request.Files?.Length; i++)
             {
-                var bytes = _fileProcessor.ConvertImageToByteArray(image);
-                var url = await _uploader.Upload(bytes, image.FileName, image.ContentType);
+                var file = request.Files[i];
+                var fileId = request.Ids[i];
+                var bytes = _fileProcessor.ConvertFileToByteArray(file);
+                var url = await _uploader.Upload(bytes, file.FileName, file.ContentType);
             }
 
             return NoContent();

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
+import { v1 as uuidv1 } from 'uuid';
 
 declare var $: $;
 declare var mapboxgl: any;
@@ -13,7 +14,7 @@ declare var turf: any;
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-    files: File[] = [];
+    files: any[] = [];
 
     constructor(private http: HttpClient) { }
 
@@ -332,6 +333,7 @@ export class AppComponent implements OnInit {
             function generateAreas(heartPolygon, voronoiPolygons) {
                 for (let i = 0; i < voronoiPolygons.features.length; i++) {
                     voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
+                    voronoiPolygons.features[i].properties.id = uuidv1();
                     // tslint:disable-next-line: no-bitwise
                     voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 10) * 10;
                     // voronoiPolygons.features[i].properties.completion = 10;
@@ -478,7 +480,6 @@ export class AppComponent implements OnInit {
 
                 $('#upload-images-button').on('click', () => {
                     this.uploadFiles().subscribe(result => {
-                        console.log('uploaded');
                     }, err => {
                         console.error(err);
                     });
@@ -628,9 +629,8 @@ export class AppComponent implements OnInit {
 
     public onAddFiles(e: any) {
         if (e.target.files && e.target.files[0]) {
-            const filesCount = e.target.files.length;
             Array.from(e.target.files).forEach((file: File) => {
-                this.files.push(file);
+                this.files.push({ fileData: file, id: uuidv1() });
             });
         }
     }
@@ -641,10 +641,11 @@ export class AppComponent implements OnInit {
 
     public uploadFiles(): Observable<any> {
         const formData = new FormData();
-        this.files.forEach((file: File) => {
-            formData.append('images', file);
+        this.files.forEach((file: any) => {
+            formData.append('files', file.fileData);
+            formData.append('ids', file.id);
         });
 
-        return this.http.post('https://localhost:44394/api/images', formData);
+        return this.http.post('https://localhost:44394/api/files', formData);
     }
 }

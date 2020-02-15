@@ -10,7 +10,7 @@ namespace Valentine.Api.Services
 {
     public class FileProcessor : IFileProcessor
     {
-        public byte[] ConvertImageToByteArray(IFormFile image)
+        public byte[] ConvertFileToByteArray(IFormFile image)
         {
             byte[] result = null;
 

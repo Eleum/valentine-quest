@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Valentine.Api.Services;
 
 namespace Valentine.Api.Extensions
 {
@@ -15,8 +16,9 @@ namespace Valentine.Api.Extensions
 
         public static IServiceCollection RegisterAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration["Azure:Storage:ConnectionString"];
-            var account = CloudStorageAccount.Parse(storageConnectionString);
+            var connectionString = GetConnectionStringImagesStorage(configuration).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            var account = CloudStorageAccount.Parse(connectionString);
             var client = account.CreateCloudBlobClient();
             var blob = client.GetContainerReference(BlobContainerName);
 
@@ -29,6 +31,14 @@ namespace Valentine.Api.Extensions
 
             services.AddSingleton(typeof(CloudBlobContainer), blob);
             return services;
+        }
+
+        private static async Task<string> GetConnectionStringImagesStorage(IConfiguration configuration)
+        {
+            var imagesStorageSecretName = configuration["Azure:KeyVault:ImagesStorageSecretName"];
+            var azure = new AzureService();
+
+            return await azure.GetKeyVaultSecretAsync(imagesStorageSecretName);
         }
     }
 }
