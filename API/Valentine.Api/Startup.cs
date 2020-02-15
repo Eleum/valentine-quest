@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Valentine.Api.Extensions;
 using Valentine.Api.Interfaces;
 using Valentine.Api.Services;
+using Valentine.Application.Interfaces;
+using Valentine.Application.Repositories;
+using Valentine.Persistence;
 
 namespace Valentine.Api
 {
@@ -30,8 +33,10 @@ namespace Valentine.Api
         {
             services.RegisterAzureBlobStorage(Configuration);
 
+            services.AddScoped<IValentineDbContext, ValentineDbContext>();
             services.AddScoped<IFileProcessor, FileProcessor>();
             services.AddScoped<IFileCloudUploader, FileCloudUploader>();
+            services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddControllers();
             services.AddCors(options =>

@@ -11,5 +11,7 @@ namespace Valentine.Api.Contracts.Requests
         public IFormFile[] Files { get; set; }
         
         public string[] Ids { get; set; }
+
+        public string AreaId { get; set; }
     }
 }

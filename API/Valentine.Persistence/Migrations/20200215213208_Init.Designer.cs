@@ -9,7 +9,7 @@ using Valentine.Persistence;
 namespace Valentine.Persistence.Migrations
 {
     [DbContext(typeof(ValentineDbContext))]
-    [Migration("20200213213901_Init")]
+    [Migration("20200215213208_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace Valentine.Persistence.Migrations
 
                     b.HasIndex("AreaId");
 
-                    b.ToTable("Image");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Map", b =>

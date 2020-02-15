@@ -441,7 +441,7 @@ export class AppComponent implements OnInit {
                 });
 
                 const description = `<strong>Completion: ${selectedArea.properties.completion}</strong>
-                <div class="container">
+                <div class="container" id="area-container" data-area=${selectedArea.properties.id}>
                     <div class="row">
                         <div class="card" style="width: 18rem;">
                             <div class="card-body">
@@ -479,7 +479,8 @@ export class AppComponent implements OnInit {
                 });
 
                 $('#upload-images-button').on('click', () => {
-                    this.uploadFiles().subscribe(result => {
+                    const areaId = $('#area-container').data('area');
+                    this.uploadFiles(areaId).subscribe(result => {
                     }, err => {
                         console.error(err);
                     });
@@ -639,11 +640,12 @@ export class AppComponent implements OnInit {
         this.files.splice(idx, 1);
     }
 
-    public uploadFiles(): Observable<any> {
+    public uploadFiles(areaId: string): Observable<any> {
         const formData = new FormData();
         this.files.forEach((file: any) => {
             formData.append('files', file.fileData);
             formData.append('ids', file.id);
+            formData.append('areaid', areaId);
         });
 
         return this.http.post('https://localhost:44394/api/files', formData);

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valentine.Application.Interfaces
+namespace Valentine.Domain
 {
-    class IAzureRepository
+    public class File
     {
+        public Guid Id { get; set; }
     }
 }

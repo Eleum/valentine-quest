@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Domain", "Valenti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Persistence", "Valentine.Persistence\Valentine.Persistence.csproj", "{8F271C78-4062-47DA-B5B7-B6D963210BF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Application", "Valentine.Application\Valentine.Application.csproj", "{0544991A-507F-4866-94F8-7A295AB86BA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8F271C78-4062-47DA-B5B7-B6D963210BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F271C78-4062-47DA-B5B7-B6D963210BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F271C78-4062-47DA-B5B7-B6D963210BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0544991A-507F-4866-94F8-7A295AB86BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0544991A-507F-4866-94F8-7A295AB86BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0544991A-507F-4866-94F8-7A295AB86BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0544991A-507F-4866-94F8-7A295AB86BA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

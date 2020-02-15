@@ -56,7 +56,7 @@ namespace Valentine.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Image",
+                name: "Images",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -65,9 +65,9 @@ namespace Valentine.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Image", x => x.Id);
+                    table.PrimaryKey("PK_Images", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Image_Areas_AreaId",
+                        name: "FK_Images_Areas_AreaId",
                         column: x => x.AreaId,
                         principalTable: "Areas",
                         principalColumn: "Id",
@@ -80,8 +80,8 @@ namespace Valentine.Persistence.Migrations
                 column: "MapId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Image_AreaId",
-                table: "Image",
+                name: "IX_Images_AreaId",
+                table: "Images",
                 column: "AreaId");
 
             migrationBuilder.CreateIndex(
@@ -93,7 +93,7 @@ namespace Valentine.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Image");
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "Users");

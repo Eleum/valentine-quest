@@ -48,7 +48,7 @@ namespace Valentine.Persistence.Migrations
 
                     b.HasIndex("AreaId");
 
-                    b.ToTable("Image");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Map", b =>
