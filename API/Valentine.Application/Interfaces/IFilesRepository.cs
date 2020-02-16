@@ -6,7 +6,7 @@ using Valentine.Domain;
 
 namespace Valentine.Application.Interfaces
 {
-    public interface IFileRepository
+    public interface IFilesRepository
     {
         Task<int> AddSingleFile(File file);
 

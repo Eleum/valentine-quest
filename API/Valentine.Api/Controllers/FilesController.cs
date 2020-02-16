@@ -16,9 +16,9 @@ namespace Valentine.Api.Controllers
     {
         private readonly IFileProcessor _processor;
         private readonly IFileCloudUploader _uploader;
-        private readonly IFileRepository _repository;
+        private readonly IFilesRepository _repository;
 
-        public FilesController(IFileProcessor processor, IFileCloudUploader uploader, IFileRepository repository)
+        public FilesController(IFileProcessor processor, IFileCloudUploader uploader, IFilesRepository repository)
         {
             _processor = processor;
             _uploader = uploader;

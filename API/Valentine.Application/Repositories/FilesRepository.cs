@@ -7,11 +7,11 @@ using Valentine.Domain;
 
 namespace Valentine.Application.Repositories
 {
-    public class FileRepository : IFileRepository
+    public class FilesRepository : IFilesRepository
     {
         private readonly IValentineDbContext _dbContext;
 
-        public FileRepository(IValentineDbContext dbContext)
+        public FilesRepository(IValentineDbContext dbContext)
         {
             _dbContext = dbContext;
         }

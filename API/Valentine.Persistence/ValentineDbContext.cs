@@ -9,11 +9,11 @@ namespace Valentine.Persistence
 {
     public class ValentineDbContext : DbContext, IValentineDbContext
     {
-        public DbSet<Area> Areas { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Map> Maps { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         public DbSet<Image> Images { get; set; }
 

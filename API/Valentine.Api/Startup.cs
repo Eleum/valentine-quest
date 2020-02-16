@@ -36,7 +36,8 @@ namespace Valentine.Api
             services.AddScoped<IValentineDbContext, ValentineDbContext>();
             services.AddScoped<IFileProcessor, FileProcessor>();
             services.AddScoped<IFileCloudUploader, FileCloudUploader>();
-            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IFilesRepository, FilesRepository>();
+            services.AddScoped<IAreasRepository, AreasRepository>();
 
             services.AddControllers();
             services.AddCors(options =>

@@ -559,7 +559,7 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
-    public generateAnotherLayout() {
+    public generateNewAreas() {
         const areas = this.layout.generateAreas(
             this.layout.BorderBox,
             this.layout.HeartPoints,
@@ -567,6 +567,18 @@ export class AppComponent implements OnInit {
         );
 
         this.map.getSource('areas').setData(areas);
+    }
+
+    public saveGeneratedAreas(): Observable<any> {
+        debugger;
+
+        const ids = [];
+
+        Array.from(this.map.getSource('areas')._data.features).forEach((areaFeature: any) => {
+            ids.push(areaFeature.properties.id);
+        });
+
+        return this.http.post('https://localhost:44394/api/areas', JSON.stringify(ids));
     }
 
     public onAddFiles(e: any) {

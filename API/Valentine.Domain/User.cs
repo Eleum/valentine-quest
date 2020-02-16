@@ -7,7 +7,5 @@ namespace Valentine.Domain
         public Guid Id { get; set; }
 
         public string AppKey { get; set; }
-
-        public Map Map { get; set; }
     }
 }

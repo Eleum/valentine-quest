@@ -11,7 +11,8 @@ namespace Valentine.Persistence.Migrations
                 name: "Maps",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -19,11 +20,23 @@ namespace Valentine.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AppKey = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Areas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    MapId = table.Column<Guid>(nullable: true)
+                    MapId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,45 +46,49 @@ namespace Valentine.Persistence.Migrations
                         column: x => x.MapId,
                         principalTable: "Maps",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "File",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    AppKey = table.Column<string>(nullable: true),
-                    MapId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Maps_MapId",
-                        column: x => x.MapId,
-                        principalTable: "Maps",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
+                    AreaId1 = table.Column<Guid>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
                     Url = table.Column<string>(nullable: true),
                     AreaId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.PrimaryKey("PK_File", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Images_Areas_AreaId",
-                        column: x => x.AreaId,
+                        name: "FK_File_Areas_AreaId1",
+                        column: x => x.AreaId1,
                         principalTable: "Areas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GeoPoint",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    AreaId = table.Column<Guid>(nullable: false),
+                    Position = table.Column<int>(nullable: false),
+                    Latitude = table.Column<double>(nullable: false),
+                    Longitude = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeoPoint", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GeoPoint_Areas_AreaId",
+                        column: x => x.AreaId,
+                        principalTable: "Areas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -80,20 +97,23 @@ namespace Valentine.Persistence.Migrations
                 column: "MapId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_AreaId",
-                table: "Images",
-                column: "AreaId");
+                name: "IX_File_AreaId1",
+                table: "File",
+                column: "AreaId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_MapId",
-                table: "Users",
-                column: "MapId");
+                name: "IX_GeoPoint_AreaId",
+                table: "GeoPoint",
+                column: "AreaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "File");
+
+            migrationBuilder.DropTable(
+                name: "GeoPoint");
 
             migrationBuilder.DropTable(
                 name: "Users");

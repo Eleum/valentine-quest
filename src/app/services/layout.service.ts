@@ -55,15 +55,15 @@ export class LayoutService {
         const flattenLng = heartPointsGeoJson.features.reduce((one, other) => one.concat(other.geometry.coordinates[0]), []);
         const flattenLat = heartPointsGeoJson.features.reduce((one, other) => one.concat(other.geometry.coordinates[1]), []);
 
-        function numbersSortAsc(left, right) {
+        function sortNumbersAsc(left, right) {
             return left - right;
         }
 
-        flattenLng.sort(numbersSortAsc);
+        flattenLng.sort(sortNumbersAsc);
         extremums.LngMin = flattenLng[0];
         extremums.LngMax = flattenLng[flattenLng.length - 1];
 
-        flattenLat.sort(numbersSortAsc);
+        flattenLat.sort(sortNumbersAsc);
         extremums.LatMin = flattenLat[0];
         extremums.LatMax = flattenLat[flattenLat.length - 1];
 

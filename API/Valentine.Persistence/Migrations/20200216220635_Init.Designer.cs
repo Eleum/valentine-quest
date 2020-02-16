@@ -9,7 +9,7 @@ using Valentine.Persistence;
 namespace Valentine.Persistence.Migrations
 {
     [DbContext(typeof(ValentineDbContext))]
-    [Migration("20200215213208_Init")]
+    [Migration("20200216220635_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace Valentine.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("MapId")
+                    b.Property<Guid>("MapId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -34,29 +34,60 @@ namespace Valentine.Persistence.Migrations
                     b.ToTable("Areas");
                 });
 
-            modelBuilder.Entity("Valentine.Domain.Image", b =>
+            modelBuilder.Entity("Valentine.Domain.File", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("AreaId")
+                    b.Property<Guid?>("AreaId1")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId1");
+
+                    b.ToTable("File");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("File");
+                });
+
+            modelBuilder.Entity("Valentine.Domain.GeoPoint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AreaId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AreaId");
 
-                    b.ToTable("Images");
+                    b.ToTable("GeoPoint");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Map", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -73,35 +104,47 @@ namespace Valentine.Persistence.Migrations
                     b.Property<string>("AppKey")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("MapId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("MapId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Valentine.Domain.Image", b =>
+                {
+                    b.HasBaseType("Valentine.Domain.File");
+
+                    b.Property<Guid>("AreaId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("Image");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Area", b =>
                 {
                     b.HasOne("Valentine.Domain.Map", null)
                         .WithMany("Areas")
-                        .HasForeignKey("MapId");
+                        .HasForeignKey("MapId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Valentine.Domain.Image", b =>
+            modelBuilder.Entity("Valentine.Domain.File", b =>
                 {
                     b.HasOne("Valentine.Domain.Area", null)
-                        .WithMany("Images")
-                        .HasForeignKey("AreaId");
+                        .WithMany("Files")
+                        .HasForeignKey("AreaId1");
                 });
 
-            modelBuilder.Entity("Valentine.Domain.User", b =>
+            modelBuilder.Entity("Valentine.Domain.GeoPoint", b =>
                 {
-                    b.HasOne("Valentine.Domain.Map", "Map")
-                        .WithMany()
-                        .HasForeignKey("MapId");
+                    b.HasOne("Valentine.Domain.Area", null)
+                        .WithMany("Points")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
