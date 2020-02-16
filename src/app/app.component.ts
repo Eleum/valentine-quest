@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
 import { v1 as uuidv1 } from 'uuid';
@@ -570,15 +570,23 @@ export class AppComponent implements OnInit {
     }
 
     public saveGeneratedAreas(): Observable<any> {
-        debugger;
-
-        const ids = [];
+        const json = { data: [] };
 
         Array.from(this.map.getSource('areas')._data.features).forEach((areaFeature: any) => {
-            ids.push(areaFeature.properties.id);
+            Array.from(areaFeature.geometry.coordinates[0]).forEach((coords: Array<number>, index: number) => {
+                json.data.push({
+                    areaId: areaFeature.properties.id,
+                    position: index,
+                    latitude: coords[0],
+                    longitude: coords[1]
+                });
+            });
         });
 
-        return this.http.post('https://localhost:44394/api/areas', JSON.stringify(ids));
+        let headers = new HttpHeaders();
+        headers = headers.append('content-type', 'application/json');
+
+        return this.http.post('https://localhost:44394/api/areas', JSON.stringify(json), { headers });
     }
 
     public onAddFiles(e: any) {

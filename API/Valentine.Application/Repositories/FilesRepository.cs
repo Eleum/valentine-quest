@@ -16,12 +16,6 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<int> AddSingleFile(File file)
-        {
-            _dbContext.Images.Add((Image)file);
-            return await _dbContext.SaveChangesAsync();
-        }
-
         public async Task<int> AddFiles<T>(IEnumerable<T> files) where T: File
         {
             try

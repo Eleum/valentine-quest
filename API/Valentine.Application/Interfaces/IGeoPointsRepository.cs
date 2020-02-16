@@ -6,8 +6,10 @@ using Valentine.Domain;
 
 namespace Valentine.Application.Interfaces
 {
-    public interface IFilesRepository
+    public interface IGeoPointsRepository
     {
-        Task<int> AddFiles<T>(IEnumerable<T> files) where T : File;
+        Task<GeoPoint> GetAreaGeoPoints(Guid areaId);
+
+        Task<int> SaveAreaGeoPoints(IEnumerable<GeoPoint> geoPoints);
     }
 }

@@ -38,6 +38,7 @@ namespace Valentine.Api
             services.AddScoped<IFileCloudUploader, FileCloudUploader>();
             services.AddScoped<IFilesRepository, FilesRepository>();
             services.AddScoped<IAreasRepository, AreasRepository>();
+            services.AddScoped<IGeoPointsRepository, GeoPointsRepository>();
 
             services.AddControllers();
             services.AddCors(options =>
@@ -45,7 +46,8 @@ namespace Valentine.Api
                 options.AddPolicy(Configuration.GetValue<string>("CorsPolicy"),
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "https://localhost:4200");
+                        builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                            .AllowAnyHeader();
                     });
             });
         }

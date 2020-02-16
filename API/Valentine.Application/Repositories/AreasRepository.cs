@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Valentine.Application.Interfaces;
+using Valentine.Domain;
 
 namespace Valentine.Application.Repositories
 {
@@ -20,14 +21,14 @@ namespace Valentine.Application.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<int> SaveAreasAsync(Guid mapId, IEnumerable<Guid> areasIds)
+        public async Task<int> SaveAreasAsync(IEnumerable<Area> areas)
         {
-            foreach (var areaId in areasIds)
+            foreach (var area in areas)
             {
-                _dbContext.Areas.Add(new Domain.Area(areaId, mapId));
+                _dbContext.Areas.Add(area);
             }
 
-            throw new NotImplementedException();
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }

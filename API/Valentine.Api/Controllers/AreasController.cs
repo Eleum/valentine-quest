@@ -9,19 +9,22 @@ using Valentine.Application.Interfaces;
 namespace Valentine.Api.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class AreasController : ControllerBase
     {
         private readonly IAreasRepository _areasRepository;
+        private readonly IGeoPointsRepository _geoPointsRepository;
 
-        public AreasController(IAreasRepository areasRepository)
+        public AreasController(IAreasRepository areasRepository, IGeoPointsRepository geoPointsRepository)
         {
             _areasRepository = areasRepository;
+            _geoPointsRepository = geoPointsRepository;
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveAreas([FromBody]AreasSaveRequest request)
         {
-            await _areasRepository.SaveAreasAsync(Guid.Parse("851c2973-bc9f-4078-9919-d5f44b35df61"), request.Ids);
+            // TODO:
             return Ok();
         }
     }

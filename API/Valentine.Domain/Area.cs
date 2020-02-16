@@ -11,11 +11,11 @@ namespace Valentine.Domain
 
         public Guid MapId { get; set; }
 
-        public List<GeoPoint> Points { get; set; }
+        public IEnumerable<GeoPoint> GeoPoints { get; set; }
 
-        public List<File> Files { get; set; }
+        public IEnumerable<File> Files { get; set; }
 
-        public double Progress => Files.Count == 0 ? 0 : Files.Count / 100;
+        public double Progress => Files.Count() == 0 ? 0 : Files.Count() / 100;
 
         public Area(Guid id, Guid mapId)
         {
