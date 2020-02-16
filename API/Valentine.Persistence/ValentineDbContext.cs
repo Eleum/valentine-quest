@@ -15,6 +15,8 @@ namespace Valentine.Persistence
 
         public DbSet<Area> Areas { get; set; }
 
+        public DbSet<GeoPoint> GeoPoints { get; set; }
+
         public DbSet<Image> Images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -9,7 +9,7 @@ using Valentine.Persistence;
 namespace Valentine.Persistence.Migrations
 {
     [DbContext(typeof(ValentineDbContext))]
-    [Migration("20200216220635_Init")]
+    [Migration("20200216223005_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace Valentine.Persistence.Migrations
 
                     b.HasIndex("AreaId");
 
-                    b.ToTable("GeoPoint");
+                    b.ToTable("GeoPoints");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Map", b =>
@@ -141,7 +141,7 @@ namespace Valentine.Persistence.Migrations
             modelBuilder.Entity("Valentine.Domain.GeoPoint", b =>
                 {
                     b.HasOne("Valentine.Domain.Area", null)
-                        .WithMany("Points")
+                        .WithMany("GeoPoints")
                         .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

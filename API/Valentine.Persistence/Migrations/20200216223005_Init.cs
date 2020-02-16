@@ -71,7 +71,7 @@ namespace Valentine.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GeoPoint",
+                name: "GeoPoints",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -82,9 +82,9 @@ namespace Valentine.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GeoPoint", x => x.Id);
+                    table.PrimaryKey("PK_GeoPoints", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GeoPoint_Areas_AreaId",
+                        name: "FK_GeoPoints_Areas_AreaId",
                         column: x => x.AreaId,
                         principalTable: "Areas",
                         principalColumn: "Id",
@@ -102,8 +102,8 @@ namespace Valentine.Persistence.Migrations
                 column: "AreaId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GeoPoint_AreaId",
-                table: "GeoPoint",
+                name: "IX_GeoPoints_AreaId",
+                table: "GeoPoints",
                 column: "AreaId");
         }
 
@@ -113,7 +113,7 @@ namespace Valentine.Persistence.Migrations
                 name: "File");
 
             migrationBuilder.DropTable(
-                name: "GeoPoint");
+                name: "GeoPoints");
 
             migrationBuilder.DropTable(
                 name: "Users");

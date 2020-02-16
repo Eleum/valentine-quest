@@ -76,7 +76,7 @@ namespace Valentine.Persistence.Migrations
 
                     b.HasIndex("AreaId");
 
-                    b.ToTable("GeoPoint");
+                    b.ToTable("GeoPoints");
                 });
 
             modelBuilder.Entity("Valentine.Domain.Map", b =>
@@ -139,7 +139,7 @@ namespace Valentine.Persistence.Migrations
             modelBuilder.Entity("Valentine.Domain.GeoPoint", b =>
                 {
                     b.HasOne("Valentine.Domain.Area", null)
-                        .WithMany("Points")
+                        .WithMany("GeoPoints")
                         .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
