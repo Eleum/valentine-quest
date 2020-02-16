@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
 import { v1 as uuidv1 } from 'uuid';
+import { LayoutService } from './services/layout.service';
 
 declare var $: $;
 declare var mapboxgl: any;
@@ -14,9 +15,10 @@ declare var turf: any;
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+    map: any;
     files: any[] = [];
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private layout: LayoutService) { }
 
     ngOnInit() {
         $('#app-key-modal').on('shown.bs.modal', () => {
@@ -38,6 +40,7 @@ export class AppComponent implements OnInit {
             maxBounds: bounds,
             attributionControl: false
         });
+        this.map = map;
 
         const size = 150;
         const speedFactor = 2;
@@ -261,92 +264,14 @@ export class AppComponent implements OnInit {
 
             const points = map.getSource('heart-points');
 
-            let lngMin = -1;
-            let lngMax = -1;
-            let latMin = -1;
-            let latMax = -1;
-
-            function calculateMaxMin() {
-                const flattenLng = points._data.features.reduce((one, other) => one.concat(other.geometry.coordinates[0]), []);
-                const flattenLat = points._data.features.reduce((one, other) => one.concat(other.geometry.coordinates[1]), []);
-
-                function numbersSortAsc(left, right) {
-                    return left - right;
-                }
-
-                flattenLng.sort(numbersSortAsc);
-                lngMin = flattenLng[0];
-                lngMax = flattenLng[flattenLng.length - 1];
-
-                flattenLat.sort(numbersSortAsc);
-                latMin = flattenLat[0];
-                latMax = flattenLat[flattenLat.length - 1];
-            }
-
-            function generateRandomInnerPoints() {
-                const polygon = map.getSource('polygon-area')._data.features[0];
-
-                function generatePoint() {
-                    const lng = parseFloat((Math.random() * (lngMax - lngMin) + lngMin).toFixed(15));
-                    const lat = parseFloat((Math.random() * (latMax - latMin) + latMin).toFixed(15));
-
-                    const point = {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: []
-                        }
-                    };
-                    point.geometry.coordinates.push(lng, lat);
-
-                    const isInside = turf.inside(point, polygon);
-
-                    if (isInside) {
-                        return point;
-                    } else {
-                        return generatePoint();
-                    }
-                }
-
-                for (let i = 0; i < 3; i++) {
-                    geoJsonInnerPoints.features.push(generatePoint());
-                }
-            }
-
-            calculateMaxMin();
-            generateRandomInnerPoints();
-
-            const a = geoJsonHeartPolygon;
-            const b = turf.bbox(a);
-
-            const options = {
-                bbox: b
-            };
-
-            const pointsForPolygons = {
-                type: 'FeatureCollection',
-                features: geoJsonHeartPoints.features.concat(geoJsonInnerPoints.features)
-            };
-
-            const polygonsAreas = turf.voronoi(pointsForPolygons, options);
-
-            function generateAreas(heartPolygon, voronoiPolygons) {
-                for (let i = 0; i < voronoiPolygons.features.length; i++) {
-                    voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
-                    voronoiPolygons.features[i].properties.id = uuidv1();
-                    // tslint:disable-next-line: no-bitwise
-                    voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 10) * 10;
-                    // voronoiPolygons.features[i].properties.completion = 10;
-                }
-            }
-
-            generateAreas(geoJsonHeartPolygon.features[0], polygonsAreas);
+            const bbox = turf.bbox(geoJsonHeartPolygon);
+            const areas = this.layout.generateAreas(bbox, geoJsonHeartPoints, geoJsonHeartPolygon);
 
             map.addSource('bbox', {
                 type: 'geojson',
                 data: {
                     type: 'FeatureCollection',
-                    features: [b]
+                    features: [bbox]
                 }
             });
             map.addLayer({
@@ -361,7 +286,7 @@ export class AppComponent implements OnInit {
             });
             map.addSource('areas', {
                 type: 'geojson',
-                data: polygonsAreas
+                data: areas
             });
             map.addLayer({
                 id: 'areas',
@@ -622,10 +547,26 @@ export class AppComponent implements OnInit {
         });
     }
 
-    public showToast() {
+    public showGuideToast() {
         setTimeout(() => {
-            $('.toast').toast('show');
+            $('#guide').toast('show');
         }, 0);
+    }
+
+    public showLayoutToast() {
+        setTimeout(() => {
+            $('#area-generator').toast('show');
+        }, 0);
+    }
+
+    public generateAnotherLayout() {
+        const areas = this.layout.generateAreas(
+            this.layout.BorderBox,
+            this.layout.HeartPoints,
+            this.layout.HeartPolygon
+        );
+
+        this.map.getSource('areas').setData(areas);
     }
 
     public onAddFiles(e: any) {
