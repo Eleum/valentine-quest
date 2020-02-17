@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
-import { v1 as uuidv1 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { LayoutService } from './services/layout.service';
 
 declare var $: $;
@@ -569,7 +569,7 @@ export class AppComponent implements OnInit {
         this.map.getSource('areas').setData(areas);
     }
 
-    public saveGeneratedAreas(): Observable<any> {
+    public saveGeneratedAreas() {
         const json = { data: [] };
 
         Array.from(this.map.getSource('areas')._data.features).forEach((areaFeature: any) => {
@@ -586,13 +586,17 @@ export class AppComponent implements OnInit {
         let headers = new HttpHeaders();
         headers = headers.append('content-type', 'application/json');
 
-        return this.http.post('https://localhost:44394/api/areas', JSON.stringify(json), { headers });
+        this.http.post('https://localhost:44394/api/areas', JSON.stringify(json), { headers })
+            .subscribe(response => {
+            }, err => {
+                console.error(err);
+            });
     }
 
     public onAddFiles(e: any) {
         if (e.target.files && e.target.files[0]) {
             Array.from(e.target.files).forEach((file: File) => {
-                this.files.push({ fileData: file, id: uuidv1() });
+                this.files.push({ fileData: file, id: uuidv4() });
             });
         }
     }

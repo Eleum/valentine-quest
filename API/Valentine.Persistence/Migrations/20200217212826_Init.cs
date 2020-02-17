@@ -54,20 +54,19 @@ namespace Valentine.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    AreaId1 = table.Column<Guid>(nullable: true),
+                    AreaId = table.Column<Guid>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    Url = table.Column<string>(nullable: true),
-                    AreaId = table.Column<Guid>(nullable: true)
+                    Url = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_File", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_File_Areas_AreaId1",
-                        column: x => x.AreaId1,
+                        name: "FK_File_Areas_AreaId",
+                        column: x => x.AreaId,
                         principalTable: "Areas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,9 +96,9 @@ namespace Valentine.Persistence.Migrations
                 column: "MapId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_AreaId1",
+                name: "IX_File_AreaId",
                 table: "File",
-                column: "AreaId1");
+                column: "AreaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GeoPoints_AreaId",

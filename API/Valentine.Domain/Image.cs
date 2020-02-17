@@ -8,8 +8,6 @@ namespace Valentine.Domain
     {
         public string Url { get; set; }
 
-        public Guid AreaId { get; set; }
-
         public Image(Guid id, string url, Guid areaId)
         {
             Id = id;

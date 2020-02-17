@@ -9,7 +9,7 @@ using Valentine.Persistence;
 namespace Valentine.Persistence.Migrations
 {
     [DbContext(typeof(ValentineDbContext))]
-    [Migration("20200216223005_Init")]
+    [Migration("20200217212826_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,7 @@ namespace Valentine.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("AreaId1")
+                    b.Property<Guid>("AreaId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Discriminator")
@@ -49,7 +49,7 @@ namespace Valentine.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AreaId1");
+                    b.HasIndex("AreaId");
 
                     b.ToTable("File");
 
@@ -113,9 +113,6 @@ namespace Valentine.Persistence.Migrations
                 {
                     b.HasBaseType("Valentine.Domain.File");
 
-                    b.Property<Guid>("AreaId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");
 
@@ -135,7 +132,9 @@ namespace Valentine.Persistence.Migrations
                 {
                     b.HasOne("Valentine.Domain.Area", null)
                         .WithMany("Files")
-                        .HasForeignKey("AreaId1");
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Valentine.Domain.GeoPoint", b =>

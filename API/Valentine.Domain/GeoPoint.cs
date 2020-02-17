@@ -15,5 +15,14 @@ namespace Valentine.Domain
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
+
+        public GeoPoint(Guid areaId, int position, double latitude, double longitude)
+        {
+            Id = Guid.NewGuid();
+            AreaId = areaId;
+            Position = position;
+            Latitude = latitude;
+            Longitude = longitude;
+        }
     }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { v1 as uuidv1 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { GeoLocationExtremums } from 'src/app/models/geo-location-extremums';
 
 declare var turf: any;
@@ -37,7 +37,7 @@ export class LayoutService {
         function runAreasGeneration(heartPolygon, voronoiPolygons) {
             for (let i = 0; i < voronoiPolygons.features.length; i++) {
                 voronoiPolygons.features[i] = turf.intersect(voronoiPolygons.features[i], heartPolygon);
-                voronoiPolygons.features[i].properties.id = uuidv1();
+                voronoiPolygons.features[i].properties.id = uuidv4();
                 // tslint:disable-next-line: no-bitwise
                 voronoiPolygons.features[i].properties.completion = ~~(Math.random() * 10) * 10;
                 // voronoiPolygons.features[i].properties.completion = 10;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Valentine.Domain;
+﻿using System.Collections.Generic;
 
 namespace Valentine.Api.Contracts.Requests
 {

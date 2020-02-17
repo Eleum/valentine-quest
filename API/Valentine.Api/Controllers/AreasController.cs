@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Valentine.Api.Contracts.Requests;
 using Valentine.Application.Interfaces;
+using Valentine.Domain;
 
 namespace Valentine.Api.Controllers
 {
@@ -24,8 +25,16 @@ namespace Valentine.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveAreas([FromBody]AreasSaveRequest request)
         {
-            // TODO:
-            return Ok();
+            var areas = request.Data
+                .Select(x => x.AreaId)
+                .Distinct()
+                .Select(x => new Area(Guid.Parse(x), Guid.Parse("5C6949EB-B7CB-4C39-8F6A-B989A4936B58")));
+
+            var geoPoints = request.Data.Select(x => new GeoPoint(Guid.Parse(x.AreaId), x.Position, x.Latitude, x.Longitude));
+
+            await _areasRepository.SaveAreasAsync(areas);
+            await _geoPointsRepository.SaveAreaGeoPoints(geoPoints);
+            return Ok(); 
         }
     }
 }
