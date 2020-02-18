@@ -73,13 +73,14 @@
         <form>
           <div class="form-group">
             <label for="app-key-input" class="col-form-label">App key</label>
-            <input type="text" class="form-control" id="app-key-input">
+            <input id="app-key-input" type="text" class="form-control">
+            <div class="invalid-feedback">The AppKey is not valid</div>
           </div>
         </form>
       </div>
       <div class="modal-footer justify-content-between">
         <button type="button" class="btn btn-link p-0">Test mode</button>
-        <button type="button" class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-primary" (click)="getUserMapsByAppKey()">Submit</button>
       </div>
     </div>
   </div>

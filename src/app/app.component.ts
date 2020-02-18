@@ -559,6 +559,19 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
+    public getUserMapsByAppKey() {
+        debugger;
+        const appKey = $('#app-key-input').val();
+
+        this.http.get('https://localhost:44394/api/maps?appkey=' + appKey)
+            .subscribe(result => {
+                $('#app-key-input').addClass('is-valid');
+            }, err => {
+                $('#app-key-input').addClass('is-invalid');
+                console.error(err);
+            });
+    }
+
     public generateNewAreas() {
         const areas = this.layout.generateAreas(
             this.layout.BorderBox,
