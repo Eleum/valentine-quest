@@ -70,17 +70,27 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <ul class="list-group fade mb-3" id='maps-list' hidden>
+          <li class="list-group-item d-flex justify-content-between lh-condensed" *ngFor="let map of userMaps">
+            <div>
+              <h6 class="my-0">{{ map.title }}</h6>
+              <small class="text-muted">{{ map.description }}</small>
+              <br />
+              <small class="text-muted">Created {{ map.createdAt }}</small>
+            </div>
+            <span class="text-muted">{{ map.overallProgress }}</span>
+          </li>
+        </ul>
+        <form id="form-app-key">
           <div class="form-group">
             <label for="app-key-input" class="col-form-label">App key</label>
             <input id="app-key-input" type="text" class="form-control">
-            <div class="invalid-feedback">The AppKey is not valid</div>
+            <div class="invalid-feedback">The app key is not valid</div>
           </div>
         </form>
       </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-link p-0">Test mode</button>
-        <button type="button" class="btn btn-primary" (click)="getUserMapsByAppKey()">Submit</button>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary float-right" (click)="getUserMapsByAppKey()">Submit</button>
       </div>
     </div>
   </div>

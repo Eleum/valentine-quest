@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Valentine.Application.Interfaces;
@@ -16,9 +18,11 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<IEnumerable<Guid>> GetAreas(Guid mapId)
+        public async Task<IEnumerable<Area>> GetAreas(Guid mapId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Areas
+                .Where(x => x.MapId == mapId)
+                .Include(p => p.GeoPoints).ToListAsync();
         }
 
         public async Task<int> SaveAreasAsync(IEnumerable<Area> areas)

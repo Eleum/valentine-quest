@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Valentine.Domain
 {
@@ -11,5 +10,11 @@ namespace Valentine.Domain
         public Guid UserId { get; set; }
 
         public List<Area> Areas { get; set; }
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

@@ -16,6 +16,7 @@ declare var turf: any;
 })
 export class AppComponent implements OnInit {
     map: any;
+    userMaps: any[] = [];
     files: any[] = [];
 
     constructor(private http: HttpClient, private layout: LayoutService) { }
@@ -560,12 +561,15 @@ export class AppComponent implements OnInit {
     }
 
     public getUserMapsByAppKey() {
-        debugger;
         const appKey = $('#app-key-input').val();
 
         this.http.get('https://localhost:44394/api/maps?appkey=' + appKey)
-            .subscribe(result => {
-                $('#app-key-input').addClass('is-valid');
+            .subscribe((result: any) => {
+                this.userMaps = result.maps;
+                this.makePrettyCreatedAt();
+                $('#form-app-key').attr('hidden', true);
+                $('#maps-list').attr('hidden', false);
+                $('#maps-list').toggleClass('show');
             }, err => {
                 $('#app-key-input').addClass('is-invalid');
                 console.error(err);
@@ -627,5 +631,33 @@ export class AppComponent implements OnInit {
         });
 
         return this.http.post('https://localhost:44394/api/files', formData);
+    }
+
+    private makePrettyCreatedAt() {
+        this.userMaps.forEach((map: any) => {
+            map.createdAt = this.makeUpCreatedAtString(map.createdAt);
+        });
+    }
+
+    private makeUpCreatedAtString(createdAt: string) {
+        const dateTime = new Date(createdAt);
+        let prettyString = '';
+
+        const diff = (Date.now().valueOf() - dateTime.valueOf());
+        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+
+        if (diffDays === 1) {
+            prettyString = 'yesterday';
+        } else if (diffDays < 7) {
+            prettyString = `${diffDays} ago`;
+        } else if (diffDays >= 7 && diffDays < 14) {
+            prettyString = 'a week ago';
+        } else if (diffDays >= 14 && diffDays < 21) {
+            prettyString = 'two weeks ago';
+        } else {
+            prettyString = 'more than two weeks ago';
+        }
+
+        return prettyString;
     }
 }

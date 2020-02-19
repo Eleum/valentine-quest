@@ -8,7 +8,7 @@ namespace Valentine.Application.Interfaces
 {
     public interface IAreasRepository
     {
-        Task<IEnumerable<Guid>> GetAreas(Guid mapId);
+        Task<IEnumerable<Area>> GetAreas(Guid mapId);
 
         Task<int> SaveAreasAsync(IEnumerable<Area> areas);
     }

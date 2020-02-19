@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
 
@@ -21,7 +20,7 @@ namespace Valentine.Application.Repositories
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.AppKey == appKey);
 
-            return user != null ? _dbContext.Maps.Where(x => x.UserId == user.Id).ToList() : null;
+            return user != null ? await _dbContext.Maps.Where(x => x.UserId == user.Id).Include(a => a.Areas).ToListAsync() : null;
         }
     }
 }

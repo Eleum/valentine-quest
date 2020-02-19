@@ -15,7 +15,7 @@ namespace Valentine.Domain
 
         public IEnumerable<File> Files { get; set; }
 
-        public double Progress => Files.Count() == 0 ? 0 : Files.Count() / 100;
+        public double Progress => Files == null || Files.Count() == 0 ? 0 : Files.Count() / 100;
 
         public Area(Guid id, Guid mapId)
         {
