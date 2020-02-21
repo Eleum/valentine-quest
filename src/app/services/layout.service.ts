@@ -102,4 +102,54 @@ export class LayoutService {
 
         return innerPoints;
     }
+
+    public convertToMapAreas(rawAreas: any[]) {
+        debugger;
+        const areasPoints = this.createAreasPoints(rawAreas);
+        const polygons = this.createPolygons(areasPoints);
+        return this.createFeatureCollection(polygons);
+    }
+
+    private createAreasPoints(rawAreas: any[]) {
+        const areasPoints = [];
+
+        rawAreas.forEach((area: any) => {
+            area.geoPoints.sort((one, other) => (one.position > other.position) ? 1 : -1);
+            const areaPoints = [];
+            area.geoPoints.forEach((geoPoint: any) => {
+                areaPoints.push([geoPoint.latitude, geoPoint.longitude]);
+            });
+            areasPoints.push({ id: area.id, points: areaPoints });
+        });
+
+        return areasPoints;
+    }
+
+    private createPolygons(areasPoints: any[]) {
+        const polygons = [];
+
+        areasPoints.forEach(areaPoints => {
+            const polygon: any = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [areaPoints.points]
+                }
+            };
+            // TODO: completion property
+            polygon.properties.id = areaPoints.id;
+            polygon.properties.completion = 0;
+            polygons.push(polygon);
+        });
+
+        return polygons;
+    }
+
+    private createFeatureCollection(polygons: any[]) {
+        return {
+           type: 'FeatureCollection',
+           features: polygons
+        };
+    }
 }

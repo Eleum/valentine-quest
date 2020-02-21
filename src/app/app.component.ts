@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DebugNode } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
@@ -560,6 +560,18 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
+    public generateNewAreas() {
+        const areas = this.layout.generateAreas(
+            this.layout.BorderBox,
+            this.layout.HeartPoints,
+            this.layout.HeartPolygon
+        );
+
+        debugger;
+
+        this.map.getSource('areas').setData(areas);
+    }
+
     public getUserMapsByAppKey() {
         const appKey = $('#app-key-input').val();
 
@@ -574,16 +586,6 @@ export class AppComponent implements OnInit {
                 $('#app-key-input').addClass('is-invalid');
                 console.error(err);
             });
-    }
-
-    public generateNewAreas() {
-        const areas = this.layout.generateAreas(
-            this.layout.BorderBox,
-            this.layout.HeartPoints,
-            this.layout.HeartPolygon
-        );
-
-        this.map.getSource('areas').setData(areas);
     }
 
     public saveGeneratedAreas() {
@@ -605,6 +607,16 @@ export class AppComponent implements OnInit {
 
         this.http.post('https://localhost:44394/api/areas', JSON.stringify(json), { headers })
             .subscribe(response => {
+            }, err => {
+                console.error(err);
+            });
+    }
+
+    public loadMapAreas(mapId: string) {
+        this.http.get(`https://localhost:44394/api/areas?mapid=${mapId}`)
+            .subscribe((response: any) => {
+                const areas = this.layout.convertToMapAreas(response.areas);
+                this.map.getSource('areas').setData(areas);
             }, err => {
                 console.error(err);
             });
