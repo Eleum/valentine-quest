@@ -71,7 +71,7 @@
       </div>
       <div class="modal-body">
         <ul class="list-group fade mb-3" id='maps-list' hidden>
-          <li class="list-group-item d-flex justify-content-between lh-condensed" *ngFor="let map of userMaps">
+          <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed" *ngFor="let map of userMaps">
             <div>
               <h6 class="my-0">{{ map.title }}</h6>
               <small class="text-muted">{{ map.description }}</small>
@@ -79,7 +79,7 @@
               <small class="text-muted">Created {{ map.createdAt }}</small>
             </div>
             <span class="text-muted">{{ map.overallProgress }}</span>
-          </li>
+          </a>
         </ul>
         <form id="form-app-key">
           <div class="form-group">
