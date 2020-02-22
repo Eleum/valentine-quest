@@ -22,6 +22,7 @@
     "@turf/turf": "^5.1.6",
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",
+    "ng4-loading-spinner": "^1.2.3",
     "popper.js": "^1.16.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",

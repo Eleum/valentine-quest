@@ -104,7 +104,6 @@ export class LayoutService {
     }
 
     public convertToMapAreas(rawAreas: any[]) {
-        debugger;
         const areasPoints = this.createAreasPoints(rawAreas);
         const polygons = this.createPolygons(areasPoints);
         return this.createFeatureCollection(polygons);

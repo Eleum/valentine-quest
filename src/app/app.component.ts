@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import * as $ from 'jquery';
 import { v4 as uuidv4 } from 'uuid';
 import { LayoutService } from './services/layout.service';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 declare var $: $;
 declare var mapboxgl: any;
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
     userMaps: any[] = [];
     files: any[] = [];
 
-    constructor(private http: HttpClient, private layout: LayoutService) { }
+    constructor(private http: HttpClient, private layout: LayoutService, private spinner: Ng4LoadingSpinnerService) { }
 
     ngOnInit() {
         $('#app-key-modal').on('shown.bs.modal', () => {
@@ -518,15 +519,6 @@ export class AppComponent implements OnInit {
 
         });
 
-        map.on('mousemove', (e: any) => {
-            document.getElementById('info').innerHTML =
-                JSON.stringify(e.point) +
-                '<br />' +
-                JSON.stringify(e.lngLat.wrap()) +
-                '<br />' +
-                JSON.stringify(map.getZoom());
-        });
-
         map.on('contextmenu', (e: any) => {
             const el = document.createElement('textarea');
             el.value = `[${e.lngLat.lng}, ${e.lngLat.lat}]`;
@@ -566,8 +558,6 @@ export class AppComponent implements OnInit {
             this.layout.HeartPoints,
             this.layout.HeartPolygon
         );
-
-        debugger;
 
         this.map.getSource('areas').setData(areas);
     }
@@ -613,8 +603,11 @@ export class AppComponent implements OnInit {
     }
 
     public loadMapAreas(mapId: string) {
+        this.spinner.show();
+        $('#app-key-modal').modal('hide');
         this.http.get(`https://localhost:44394/api/areas?mapid=${mapId}`)
             .subscribe((response: any) => {
+                this.spinner.hide();
                 const areas = this.layout.convertToMapAreas(response.areas);
                 this.map.getSource('areas').setData(areas);
             }, err => {
