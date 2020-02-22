@@ -1,4 +1,4 @@
-import { Component, OnInit, DebugNode } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import * as $ from 'jquery';
@@ -25,6 +25,9 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         $('#app-key-modal').on('shown.bs.modal', () => {
             $('#app-key-input').trigger('focus');
+            $('.empty-link').on('click', (e: any) => {
+                e.preventDefault();
+            });
         });
 
         const bounds = [
@@ -230,6 +233,8 @@ export class AppComponent implements OnInit {
         };
 
         map.on('load', async () => {
+            $('#app-key-modal').modal('show');
+
             map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
             map.addSource('heart-points', {
                 type: 'geojson',
@@ -266,35 +271,14 @@ export class AppComponent implements OnInit {
 
             const points = map.getSource('heart-points');
 
-            const bbox = turf.bbox(geoJsonHeartPolygon);
-            const areas = this.layout.generateAreas(bbox, geoJsonHeartPoints, geoJsonHeartPolygon);
-
-            map.addSource('bbox', {
-                type: 'geojson',
-                data: {
-                    type: 'FeatureCollection',
-                    features: [bbox]
-                }
-            });
-            map.addLayer({
-                id: 'bbox',
-                type: 'fill',
-                source: 'bbox',
-                layout: {},
-                paint: {
-                    'fill-color': '#000',
-                    'fill-opacity': 0.2
-                }
-            });
             map.addSource('areas', {
                 type: 'geojson',
-                data: areas
+                data: null
             });
             map.addLayer({
                 id: 'areas',
                 type: 'fill',
                 source: 'areas',
-                layout: {},
                 paint: {
                     'fill-color': [
                         'let',
@@ -304,10 +288,8 @@ export class AppComponent implements OnInit {
                             'interpolate',
                             ['linear'],
                             ['var', 'completionPercentage'],
-                            0,
-                            ['to-color', '#ffebeb'],
-                            100,
-                            ['to-color', '#ff3334']
+                            0, ['to-color', '#ffebeb'],
+                            100, ['to-color', '#ff3334']
                         ]
                     ],
                     'fill-opacity': [
@@ -318,10 +300,8 @@ export class AppComponent implements OnInit {
                             'interpolate',
                             ['linear'],
                             ['var', 'completionPercentage'],
-                            0,
-                            0.3,
-                            100,
-                            1
+                            0, 0.3,
+                            100, 1
                         ]
                     ]
                 }
@@ -346,7 +326,7 @@ export class AppComponent implements OnInit {
             map.on('mouseleave', 'areas', () => {
                 map.getCanvas().style.cursor = '';
             });
-            map.on('click', 'areas', (e) => {
+            map.on('click', 'areas', (e: any) => {
                 const point = {
                     type: 'Feature',
                     geometry: {
@@ -356,7 +336,7 @@ export class AppComponent implements OnInit {
                 };
                 point.geometry.coordinates.push(e.lngLat.lng, e.lngLat.lat);
 
-                const selectedArea = map.getSource('areas')._data.features.find((polygon) => {
+                const selectedArea = map.getSource('areas')._data.features.find((polygon: any) => {
                     return turf.inside(point, polygon);
                 });
 
@@ -562,15 +542,20 @@ export class AppComponent implements OnInit {
         this.map.getSource('areas').setData(areas);
     }
 
+    test() {
+        console.log("1243125151251");
+    }
+
     public getUserMapsByAppKey() {
         const appKey = $('#app-key-input').val();
 
         this.http.get('https://localhost:44394/api/maps?appkey=' + appKey)
             .subscribe((result: any) => {
-                this.userMaps = result.maps;
+                //this.userMaps = result.maps;
                 this.makePrettyCreatedAt();
                 $('#form-app-key').attr('hidden', true);
-                $('#maps-list').attr('hidden', false);
+                $('#maps-list-container').attr('hidden', false);
+                $('#app-key-modal-footer').attr('hidden', true);
                 $('#maps-list').toggleClass('show');
             }, err => {
                 $('#app-key-input').addClass('is-invalid');

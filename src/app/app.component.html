@@ -36,8 +36,8 @@
   </div>
 </div>
 <div aria-live="polite" aria-atomic="true">
-  <div id="area-generator" class="toast fade hide" style="position: absolute; bottom: 0; right: 0;" data-autohide="false"
-    data-animation="true">
+  <div id="area-generator" class="toast fade hide" style="position: absolute; bottom: 0; right: 0;"
+    data-autohide="false" data-animation="true">
     <div class="toast-header">
       <strong class="mr-auto">Areas generator</strong>
       <small>Settings</small>
@@ -70,17 +70,37 @@
         </button>
       </div>
       <div class="modal-body">
-        <ul class="list-group fade mb-3" id='maps-list' hidden>
-          <button class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed" *ngFor="let map of userMaps" (click)="loadMapAreas(map.id)">
-            <div>
-              <h6 class="my-0">{{ map.title }}</h6>
-              <small class="text-muted">{{ map.description }}</small>
-              <br />
-              <small class="text-muted">Created {{ map.createdAt }}</small>
+        <div id="maps-list-container" hidden>
+          <div class="d-flex justify-content-between align-items-center mb-0">
+            <h6 class="d-flex align-items-center text-muted text-uppercase mb-0">
+              Available maps
+              <span class="badge badge-primary badge-pill ml-1">{{ userMaps.length }}</span>
+            </h6>
+            <button class="btn btn-link px-0">+ Add New</button>
+          </div>
+          <ul class="list-group fade mb-3" id="maps-list">
+            <button class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed"
+              *ngFor="let map of userMaps" (click)="loadMapAreas(map.id)">
+              <div>
+                <h6 class="my-0">{{ map.title }}</h6>
+                <small class="text-muted">{{ map.description }}</small>
+                <br />
+                <small class="text-muted">Created {{ map.createdAt }}</small>
+              </div>
+              <span class="text-muted">{{ map.overallProgress }}</span>
+            </button>
+            <div class="card text-center" *ngIf="userMaps == undefined || userMaps.length === 0">
+              <div class="card-body">
+                <p class="card-text">There are no maps yet</p>
+                <p class="card-text"><small class="text-muted">
+                  Start your quest by adding 
+                  <a href="#" class="card-link empty-link" (click)="test()">a new map</a> or see the 
+                  <a href="#" class="card-link empty-link m-0">guide</a> how it works</small>
+                </p>
+              </div>
             </div>
-            <span class="text-muted">{{ map.overallProgress }}</span>
-          </button>
-        </ul>
+          </ul>
+        </div>
         <form id="form-app-key">
           <div class="form-group">
             <label for="app-key-input" class="col-form-label">App key</label>
