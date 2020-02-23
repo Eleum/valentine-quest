@@ -30,6 +30,14 @@ export class AppComponent implements OnInit {
             });
         });
 
+        $('#app-map-modal').on('show.bs.modal', () => {
+            $('#app-key-modal').css('opacity', '0.7');
+        });
+
+        $('#app-map-modal').on('hide.bs.modal', () => {
+            $('#app-key-modal').css('opacity', '1');
+        });
+
         const bounds = [
             [26.955186661198155, 53.76002532703791], // Southwest coordinates
             [28.067600169786317, 54.08218624607514] // Northeast coordinates
@@ -532,6 +540,10 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
+    public addNewMap() {
+
+    }
+
     public generateNewAreas() {
         const areas = this.layout.generateAreas(
             this.layout.BorderBox,
@@ -540,10 +552,6 @@ export class AppComponent implements OnInit {
         );
 
         this.map.getSource('areas').setData(areas);
-    }
-
-    test() {
-        console.log("1243125151251");
     }
 
     public getUserMapsByAppKey() {
