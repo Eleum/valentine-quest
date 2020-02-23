@@ -16,20 +16,12 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<int> AddFiles<T>(IEnumerable<T> files) where T: File
+        public async Task<int> AddFiles<T>(IEnumerable<T> files) where T : File
         {
-            try
+            foreach (var file in files)
             {
-                foreach (var file in files)
-                {
-                    _dbContext.Images.Add(file as Image);
-                }
+                _dbContext.Images.Add(file as Image);
             }
-            catch (Exception e)
-            {
-
-            }
-            
 
             return await _dbContext.SaveChangesAsync();
         }

@@ -7,6 +7,8 @@ namespace Valentine.Api.Contracts.Responses
 {
     public class MapsFetchResponse
     {
+        public Guid UserId { get; set; }
+
         public IEnumerable<MapsCollectionItem> Maps { get; set; }
     }
 

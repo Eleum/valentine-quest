@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,25 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Map>> GetMapsByAppKey(string appKey)
+        public async Task<Tuple<Guid, IEnumerable<Map>>> GetMapsByAppKey(string appKey)
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.AppKey == appKey);
+            return user != null
+                ? new Tuple<Guid, IEnumerable<Map>>(
+                    user.Id,
+                    await _dbContext.Maps.Where(x => x.UserId == user.Id).Include(a => a.Areas).ToListAsync()
+                ) : null;
+        }
 
-            return user != null ? await _dbContext.Maps.Where(x => x.UserId == user.Id).Include(a => a.Areas).ToListAsync() : null;
+        public async Task<int> SaveMap(Map map)
+        {
+            var user = _dbContext.Users.FirstOrDefault(x => x.Id == map.UserId);
+
+            if (user == null)
+                throw new ArgumentException("The user id is not valid");
+
+            _dbContext.Maps.Add(map);
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }

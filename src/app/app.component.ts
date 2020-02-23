@@ -17,6 +17,8 @@ declare var turf: any;
 })
 export class AppComponent implements OnInit {
     map: any;
+    appKey = '';
+    userId = '';
     userMaps: any[] = [];
     files: any[] = [];
 
@@ -36,6 +38,30 @@ export class AppComponent implements OnInit {
 
         $('#app-map-modal').on('hide.bs.modal', () => {
             $('#app-key-modal').css('opacity', '1');
+        });
+
+        $('#app-map-form').submit((event: any) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            $('#app-map-title-group').removeClass('was-validated');
+            $('#app-map-title-group').addClass('was-validated');
+
+            if ($('#app-map-form')[0].checkValidity() === false) {
+                return;
+            }
+
+            this.addNewMap(
+                $('#app-map-title').val(),
+                $.trim($('#app-map-description').val()),
+                $('#app-map-default')[0].checked
+            );
+        });
+
+        $('#app-map-title').keydown((event: any) => {
+            if (event.which === 32 && $.trim($('#app-map-title').val()) === '') {
+                event.preventDefault();
+            }
         });
 
         const bounds = [
@@ -540,8 +566,19 @@ export class AppComponent implements OnInit {
         }, 0);
     }
 
-    public addNewMap() {
+    public addNewMap(title: string, description: string, isDefault: boolean) {
+        let headers = new HttpHeaders();
+        headers = headers.append('content-type', 'application/json');
 
+        const body = { userId: this.userId, title, description, isDefault };
+
+        this.http.post('https://localhost:44394/api/maps', JSON.stringify(body), { headers })
+            .subscribe((response: any) => {
+                $('#app-map-modal').modal('hide');
+                this.getUserMapsByAppKey(this.appKey);
+            }, err => {
+                console.error(err);
+            });
     }
 
     public generateNewAreas() {
@@ -554,17 +591,36 @@ export class AppComponent implements OnInit {
         this.map.getSource('areas').setData(areas);
     }
 
-    public getUserMapsByAppKey() {
-        const appKey = $('#app-key-input').val();
+    public getUserMapsByAppKey(appKey?: string): void;
+    public getUserMapsByAppKey(appKey?: string) {
+        if (appKey !== undefined) {
+            this.getUserMaps(appKey);
+        } else {
+            const inputAppKey = $('#app-key-input').val();
+            this.getUserMaps(inputAppKey);
+        }
+    }
 
+    private getUserMaps(appKey: string) {
         this.http.get('https://localhost:44394/api/maps?appkey=' + appKey)
-            .subscribe((result: any) => {
-                //this.userMaps = result.maps;
+            .subscribe((response: any) => {
+                if (this.appKey === '') {
+                    this.appKey = appKey;
+                }
+                if (this.userId === '') {
+                    this.userId = response.userId;
+                }
+
+                this.userMaps = response.maps;
                 this.makePrettyCreatedAt();
+
                 $('#form-app-key').attr('hidden', true);
                 $('#maps-list-container').attr('hidden', false);
                 $('#app-key-modal-footer').attr('hidden', true);
-                $('#maps-list').toggleClass('show');
+
+                if (!$('#maps-list').hasClass('show')) {
+                    $('#maps-list').toggleClass('show');
+                }
             }, err => {
                 $('#app-key-input').addClass('is-invalid');
                 console.error(err);
@@ -589,7 +645,7 @@ export class AppComponent implements OnInit {
         headers = headers.append('content-type', 'application/json');
 
         this.http.post('https://localhost:44394/api/areas', JSON.stringify(json), { headers })
-            .subscribe(response => {
+            .subscribe((response: any) => {
             }, err => {
                 console.error(err);
             });
@@ -642,12 +698,14 @@ export class AppComponent implements OnInit {
         let prettyString = '';
 
         const diff = (Date.now().valueOf() - dateTime.valueOf());
-        const diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+        const diffDays = Math.floor(diff / (1000 * 3600 * 24));
 
-        if (diffDays === 1) {
+        if (diffDays === 0) {
+            prettyString = 'today';
+        } else if (diffDays === 1) {
             prettyString = 'yesterday';
         } else if (diffDays < 7) {
-            prettyString = `${diffDays} ago`;
+            prettyString = `${diffDays} days ago`;
         } else if (diffDays >= 7 && diffDays < 14) {
             prettyString = 'a week ago';
         } else if (diffDays >= 14 && diffDays < 21) {

@@ -87,7 +87,7 @@
                 <br />
                 <small class="text-muted">Created {{ map.createdAt }}</small>
               </div>
-              <span class="text-muted">{{ map.overallProgress }}</span>
+              <span class="text-muted">{{ map.overallProgress === 'NaN' ? 'No areas generated' : map.overallProgress }}</span>
             </button>
             <div class="card text-center" *ngIf="userMaps == undefined || userMaps.length === 0">
               <div class="card-body">
@@ -125,10 +125,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="app-map-name">Name</label>
-            <input type="text" class="form-control" id="app-map-name" placeholder="Enter map name">
+        <form id="app-map-form" novalidate>
+          <div class="form-group" id="app-map-title-group">
+            <label for="app-map-title">Title</label>
+            <input type="text" class="form-control" id="app-map-title" placeholder="Enter map title" required>
+            <div class="invalid-feedback">Please provide a map title</div>
           </div>
           <div class="form-group">
             <label for="app-map-location">Location</label>
@@ -153,7 +154,7 @@
             </small>
           </p>
           <div class="form-group d-flex justify-content-between">
-            <button class="btn btn-primary btn-block" (click)="addNewMap()">+ Add new map</button>
+            <button type="submit" class="btn btn-primary btn-block">+ Add new map</button>
           </div>
         </form>
       </div>

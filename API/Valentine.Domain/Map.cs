@@ -15,6 +15,8 @@ namespace Valentine.Domain
 
         public string Description { get; set; }
 
+        public bool IsDefault { get; set; }
+
         public DateTimeOffset CreatedAt { get; set; }
     }
 }
