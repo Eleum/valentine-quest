@@ -44,11 +44,10 @@ namespace Valentine.Api
             services.AddControllers();
             services.AddCors(options =>
             {
-                options.AddPolicy(Configuration.GetValue<string>("CorsPolicy"),
+                options.AddPolicy(Configuration["CorsPolicy"],
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
-                            .AllowAnyHeader();
+                        builder.WithOrigins("https://localhost:44300").AllowAnyHeader();
                     });
             });
         }
@@ -65,7 +64,7 @@ namespace Valentine.Api
 
             app.UseRouting();
 
-            app.UseCors(Configuration.GetValue<string>("CorsPolicy"));
+            app.UseCors(Configuration["CorsPolicy"]);
 
             app.UseAuthorization();
 

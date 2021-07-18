@@ -26,27 +26,26 @@ namespace Valentine.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetExistingMaps([FromQuery]MapsFetchRequest request)
         {
-            if (request.AppKey == null)
-                return BadRequest();
+            if (request.AppKey is null) return BadRequest();
 
             var userMapsCollection = await _mapsRepository.GetMapsByAppKey(request.AppKey);
+            if (userMapsCollection is null) return BadRequest();
 
             var maps = new MapsFetchResponse
             {
-                UserId = userMapsCollection.Item1,
-                Maps = userMapsCollection.Item2
+                UserId = userMapsCollection.Value.Key,
+                Maps = userMapsCollection.Value.Value
                     .Select(x => new MapsCollectionItem(x.Id, x.Title, x.Description, x.CreatedAt) 
                     { 
                         OverallProgress = x.Areas.Sum(a => a.Progress) / x.Areas.Count * 100
                     })
             };
 
-            return maps.Maps == null 
-                ? (IActionResult)BadRequest() 
-                : Ok(JsonConvert.SerializeObject(maps, new JsonSerializerSettings 
-                { 
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                }));
+            return Ok(JsonConvert.SerializeObject(maps, new JsonSerializerSettings 
+            { 
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),     
+                Formatting = Formatting.Indented 
+            }));
         }
 
         public async Task<IActionResult> SaveMap([FromBody]MapSaveRequest request)

@@ -11,7 +11,7 @@ namespace Valentine.Api.Services
 {
     public class AzureService : IAzureService
     {
-        private const string AzureKeyVaultUrl = "https://IDC-KeyVault.vault.azure.net/secrets/{0}";
+        private const string AzureKeyVaultUrl = "https://valentine-kv.vault.azure.net/secrets/{0}";
 
         public async Task<string> GetKeyVaultSecretAsync(string secretName)
         {

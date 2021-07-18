@@ -2,9 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Valentine.Api.Services;
 
@@ -12,7 +9,7 @@ namespace Valentine.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        private const string BlobContainerName = "images";
+        private const string StorageContainerName = "images";
 
         public static IServiceCollection RegisterAzureBlobStorage(this IServiceCollection services, IConfiguration configuration)
         {
@@ -20,10 +17,9 @@ namespace Valentine.Api.Extensions
 
             var account = CloudStorageAccount.Parse(connectionString);
             var client = account.CreateCloudBlobClient();
-            var blob = client.GetContainerReference(BlobContainerName);
+            var blob = client.GetContainerReference(StorageContainerName);
 
-            var createdSuccessfully = blob.CreateIfNotExistsAsync().Result;
-
+            var createdSuccessfully = blob.CreateIfNotExistsAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             if (createdSuccessfully)
             {
                 blob.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
@@ -35,10 +31,10 @@ namespace Valentine.Api.Extensions
 
         private static async Task<string> GetConnectionStringImagesStorage(IConfiguration configuration)
         {
-            var imagesStorageSecretName = configuration["Azure:KeyVault:ImagesStorageSecretName"];
+            var imagesStorageKeyVaultName = configuration["Azure:KeyVault:ImagesStorageKeyVaultName"];
             var azure = new AzureService();
 
-            return await azure.GetKeyVaultSecretAsync(imagesStorageSecretName);
+            return await azure.GetKeyVaultSecretAsync(imagesStorageKeyVaultName);
         }
     }
 }

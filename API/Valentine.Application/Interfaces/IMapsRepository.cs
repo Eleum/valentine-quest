@@ -7,7 +7,7 @@ namespace Valentine.Application.Interfaces
 {
     public interface IMapsRepository
     {
-        Task<Tuple<Guid, IEnumerable<Map>>> GetMapsByAppKey(string appKey);
+        Task<KeyValuePair<Guid, IEnumerable<Map>>?> GetMapsByAppKey(string appKey);
 
         Task<int> SaveMap(Map map);
     }
