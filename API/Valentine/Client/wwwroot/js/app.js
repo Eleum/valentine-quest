@@ -7,8 +7,8 @@ function InitializeMapBox(longitude, latitude) {
         style: 'mapbox://styles/mapbox/streets-v9',
         center: [27.563054951207278, 53.901454446609534],
         zoom: 10.90,
-        /*minZoom: 10,*/
-        /*maxBounds: [longitude, latitude],*/
+        minZoom: 10,
+        maxBounds: [longitude, latitude],
         attributionControl: false
     });
 
