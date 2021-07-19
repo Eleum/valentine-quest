@@ -14,13 +14,13 @@ namespace Valentine.Api.Controllers
     public class FilesController : ControllerBase
     {
         private readonly IFileProcessor _processor;
-        private readonly IFileCloudUploader _uploader;
+        //private readonly IFileCloudUploader _uploader;
         private readonly IFilesRepository _repository;
 
-        public FilesController(IFileProcessor processor, IFileCloudUploader uploader, IFilesRepository repository)
+        public FilesController(IFileProcessor processor, IFilesRepository repository)
         {
             _processor = processor;
-            _uploader = uploader;
+            //_uploader = uploader;
             _repository = repository;
         }
 
@@ -45,16 +45,16 @@ namespace Valentine.Api.Controllers
                 var areaId = Guid.Parse(request.AreaId);
 
                 var bytes = _processor.ConvertFileToByteArray(file);
-                var url = await _uploader.Upload(bytes, file.FileName, file.ContentType);
+                //var url = await _uploader.Upload(bytes, file.FileName, file.ContentType);
 
-                images.Add(new Image(fileId, url, areaId));
+                //images.Add(new Image(fileId, url, areaId));
             }
 
             try
             {
                 await _repository.AddFiles(images);
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }

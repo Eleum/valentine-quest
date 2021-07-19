@@ -1,0 +1,143 @@
+﻿@using Valentine.Client.Helpers
+@using Valentine.Client.Enums
+@using Valentine.Application.Interfaces
+@using Valentine.Shared.Contracts.Responses
+@inject IJSRuntime JS
+@inject IHttpClientFactory ClientFactory
+@inject ILayoutService LayoutService
+
+<div class="modal fade" id="app-key-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="app-key-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="app-key-label">Welcome ❤️</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (LoadingState == MapLoadingState.Loaded)
+                {
+                    <div id="maps-list-container">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="d-flex align-items-center text-muted text-uppercase mb-0">
+                                Available maps
+                                <span class="badge badge-primary badge-pill ml-1">@Maps.Count</span>
+                            </h6>
+                            <button class="btn btn-link p-0 border-0 align-baseline text-decoration-none" data-toggle="modal" data-target="#app-map-modal">+ add new</button>
+                        </div>
+                        @if ((Maps?.Count ?? 0) == 0)
+                        {
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <p class="card-text">There are no maps yet</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Start your quest by adding
+                                            <a href="#" class="card-link empty-link" data-toggle="modal" data-target="#app-map-modal">a new map</a> or see the
+                                            <a href="#" class="card-link empty-link m-0">guide</a> how it works
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <ul class="list-group mb-3" id="maps-list">
+                                @foreach (var map in Maps)
+                                {
+                                    <button class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed" @onclick="@(() => LoadMapAreasAsync(map.Id.ToString()))">
+                                        <div>
+                                            <h6 class="my-0">@map.Title</h6>
+                                            <small class="text-muted">@map.Description</small>
+                                            <br />
+                                            <small class="text-muted">Created @map.CreatedAt</small>
+                                        </div>
+                                        <span class="text-muted">@(map.OverallProgress == -1D ? "No areas generated" : map.OverallProgress)</span>
+                                    </button>
+                                }
+                            </ul>
+                        }
+                    </div>
+                    <p class="text-center mb-0">
+                        or you can
+                        <button class="btn btn-link p-0 border-0 align-baseline text-decoration-none" @onclick="ReloadAppKey">reenter app key</button>
+                    </p>
+                }
+                else
+                {
+                    <form id="form-app-key">
+                        <div class="form-group">
+                            <label for="app-key-input" class="col-form-label">App key</label>
+                            <input id="app-key-input" type="text" class="form-control" @bind="InputValue">
+                            <div class="invalid-feedback">The app key is not valid</div>
+                        </div>
+                    </form>
+                }
+            </div>
+            <div class="modal-footer" id="app-key-modal-footer">
+                @if (!string.IsNullOrWhiteSpace(StatusCode))
+                {
+                    <p class="text-danger float-left">Error occured</p>
+                }
+                <button type="button" class="btn btn-primary float-right" @onclick="GetUserMapsAsync">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HttpClient _api;
+    private List<MapsCollectionItem> Maps { get; set; }
+
+    private string InputValue { get; set; } = "1";
+
+
+    private string StatusCode { get; set; } = string.Empty;
+    private MapLoadingState LoadingState { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _api = ClientFactory.CreateClient(Constants.WEB_API);
+        base.OnInitialized();
+    }
+
+    private async Task GetUserMapsAsync()
+    {
+        if (string.IsNullOrWhiteSpace(InputValue)) return;
+        LoadingState = MapLoadingState.NotLoaded;
+
+        //TODO: spinner and block the button while await
+        var response = await _api.GetAsync($"api/maps?appKey={InputValue}");
+        if (!response.IsSuccessStatusCode)
+        {
+            StatusCode = response.StatusCode.ToString();
+            return;
+        }
+
+        var mapsResponse = await response.Content.ReadFromJsonAsync<MapsFetchResponse>();
+        if (mapsResponse is null) return;
+
+        Maps = mapsResponse.Maps.ToList();
+        LoadingState = MapLoadingState.Loaded;
+    }
+
+    private void ReloadAppKey()
+    {
+        LoadingState = MapLoadingState.NotLoaded;
+    }
+
+    private async Task LoadMapAreasAsync(string mapId)
+    {
+        var response = await _api.GetAsync($"api/areas?mapId={mapId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            StatusCode = response.StatusCode.ToString();
+            return;
+        }
+
+        var areasResponse = await response.Content.ReadFromJsonAsync<AreasFetchResponse>();
+        var constructedAreas = LayoutService.InitializeMapAreas(areasResponse.Areas);
+
+        await JS.InvokeVoidAsync("ShowHideAppKeyModal", false);
+        await JS.InvokeVoidAsync("SetMapAreasData", constructedAreas);
+    }
+}

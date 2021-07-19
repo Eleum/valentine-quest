@@ -31,11 +31,11 @@ namespace Valentine.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.RegisterAzureBlobStorage(Configuration);
+            //services.RegisterAzureBlobStorage(Configuration);
 
             services.AddScoped<IValentineDbContext, ValentineDbContext>();
             services.AddScoped<IFileProcessor, FileProcessor>();
-            services.AddScoped<IFileCloudUploader, FileCloudUploader>();
+            //services.AddScoped<IFileCloudUploader, FileCloudUploader>();
             services.AddScoped<IMapsRepository, MapsRepository>();
             services.AddScoped<IAreasRepository, AreasRepository>();
             services.AddScoped<IGeoPointsRepository, GeoPointsRepository>();
@@ -47,7 +47,7 @@ namespace Valentine.Api
                 options.AddPolicy(Configuration["CorsPolicy"],
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:44300").AllowAnyHeader();
+                        builder.WithOrigins("https://localhost:44300", "https://localhost:5001").AllowAnyHeader();
                     });
             });
         }

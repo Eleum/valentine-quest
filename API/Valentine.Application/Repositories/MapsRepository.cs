@@ -21,7 +21,7 @@ namespace Valentine.Application.Repositories
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.AppKey == appKey);
             return user is null 
-                ? (KeyValuePair<Guid, IEnumerable<Map>>?)null 
+                ? null
                 : new KeyValuePair<Guid, IEnumerable<Map>>(
                     user.Id, 
                     await _dbContext.Maps.Where(x => x.UserId == user.Id).Include(a => a.Areas).ToListAsync());

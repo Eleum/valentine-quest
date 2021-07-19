@@ -1,0 +1,14 @@
+﻿@inject IJSRuntime JS
+
+<div id='map'></div>
+
+@code {      
+    private readonly double[] longitude = new[] { 26.955186661198155, 53.76002532703791 }; // Southwest coordinates
+    private readonly double[] latitude = new[] { 28.067600169786317, 54.08218624607514 }; // Northeast coordinates
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10);
+        await JS.InvokeVoidAsync("InitializeMapBox", longitude, latitude);
+    }
+}

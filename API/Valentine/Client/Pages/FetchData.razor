@@ -42,9 +42,6 @@ else
     {
         var client = ClientFactory.CreateClient("InternalApi");
         forecasts = await client.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-
-        var api = ClientFactory.CreateClient("WebApi");
-        var a = await api.GetFromJsonAsync<int>("api/files");
     }
 
 }

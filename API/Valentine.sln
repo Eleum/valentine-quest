@@ -11,11 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Persistence", "Va
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Application", "Valentine.Application\Valentine.Application.csproj", "{0544991A-507F-4866-94F8-7A295AB86BA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Server", "Valentine\Server\Valentine.Server.csproj", "{91033755-631A-43BA-BA6C-53F9C4C94814}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Server", "Valentine\Server\Valentine.Server.csproj", "{91033755-631A-43BA-BA6C-53F9C4C94814}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Client", "Valentine\Client\Valentine.Client.csproj", "{22E29AE2-8110-4909-AD2C-948621370485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Client", "Valentine\Client\Valentine.Client.csproj", "{22E29AE2-8110-4909-AD2C-948621370485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Shared", "Valentine\Shared\Valentine.Shared.csproj", "{1436F80E-4C89-41A3-B950-CA5051054450}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Shared", "Valentine\Shared\Valentine.Shared.csproj", "{1436F80E-4C89-41A3-B950-CA5051054450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Tests", "Valentine.Tests\Valentine.Tests.csproj", "{1C02E291-A553-49A2-AE4D-79E16E14DF1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{1436F80E-4C89-41A3-B950-CA5051054450}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1436F80E-4C89-41A3-B950-CA5051054450}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1436F80E-4C89-41A3-B950-CA5051054450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C02E291-A553-49A2-AE4D-79E16E14DF1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C02E291-A553-49A2-AE4D-79E16E14DF1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C02E291-A553-49A2-AE4D-79E16E14DF1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C02E291-A553-49A2-AE4D-79E16E14DF1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

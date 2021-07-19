@@ -31,17 +31,16 @@ namespace Valentine.Api.Controllers
             var userMapsCollection = await _mapsRepository.GetMapsByAppKey(request.AppKey);
             if (userMapsCollection is null) return BadRequest();
 
-            var maps = new MapsFetchResponse
+            var response = new MapsFetchResponse
             {
                 UserId = userMapsCollection.Value.Key,
-                Maps = userMapsCollection.Value.Value
-                    .Select(x => new MapsCollectionItem(x.Id, x.Title, x.Description, x.CreatedAt) 
-                    { 
-                        OverallProgress = x.Areas.Sum(a => a.Progress) / x.Areas.Count * 100
-                    })
+                Maps = userMapsCollection.Value.Value.Select(x => new MapsCollectionItem(x.Id, x.Title, x.Description, x.CreatedAt) 
+                { 
+                    OverallProgress = (x.Areas?.Count ?? 0) == 0 ? -1D : x.Areas.Sum(a => a.Progress) / x.Areas.Count * 100
+                })
             };
 
-            return Ok(JsonConvert.SerializeObject(maps, new JsonSerializerSettings 
+            return Ok(JsonConvert.SerializeObject(response, new JsonSerializerSettings 
             { 
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),     
                 Formatting = Formatting.Indented 
