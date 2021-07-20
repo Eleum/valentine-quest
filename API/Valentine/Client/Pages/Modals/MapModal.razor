@@ -29,7 +29,7 @@
                         <label for="app-map-description">Description</label>
                         <InputTextArea class="form-control" id="app-map-description" rows="2" placeholder="Enter map description" @bind-Value="NewMapModel.Description" />
                     </div>
-                    <div class="custom-control custom-checkbox mb-2">
+                    <div class="custom-control custom-checkbox mb-1">
                         <input type="checkbox" class="custom-control-input" id="app-map-default">
                         <label for="app-map-default" class="custom-control-label">Set as default map</label>
                     </div>
@@ -63,7 +63,6 @@
 
         await base.OnInitializedAsync();
     }
-
 
     private void SubmitHandler()
     {

@@ -4,11 +4,11 @@
 <div id='map'></div>
 
 @code {      
-    
+
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(10);
-        await JS.InvokeVoidAsync("InitializeControls", Constants.Map.Longitude, Constants.Map.Latitude);
+        await JS.InvokeVoidAsync("InitializeControls", Constants.Coordinates.NE, Constants.Coordinates.SW);
     }
 }

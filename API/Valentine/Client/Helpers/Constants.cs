@@ -13,10 +13,10 @@ namespace Valentine.Client.Helpers
             public const string WEB_API = "WebApi";
         }
 
-        public static class Map
+        public static class Coordinates
         {
-            public static readonly double[] Longitude = new[] { 26.955186661198155, 53.76002532703791 }; // Southwest coordinates
-            public static readonly double[] Latitude = new[] { 28.067600169786317, 54.08218624607514 }; // Northeast coordinates
+            public static readonly double[] NE = new[] { 26.955186661198155, 53.76002532703791 }; // Southwest coordinates
+            public static readonly double[] SW = new[] { 28.067600169786317, 54.08218624607514 }; // Northeast coordinates
         }
     }
 }
