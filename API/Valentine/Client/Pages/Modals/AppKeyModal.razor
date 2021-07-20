@@ -101,8 +101,6 @@
     private string InputValue { get; set; } = "1";
     private string StatusCode { get; set; } = string.Empty;
 
-    private int counter = 0;
-
     private MapLoadingState LoadingState { get; set; }
 
     protected override void OnInitialized()
@@ -138,9 +136,7 @@
 
         await OnUserLogin.InvokeAsync(mapsResponse.UserId);
 
-        if (++counter > 1)
-            Maps = mapsResponse.Maps.OrderByDescending(x => x.CreatedAt).ToList();
-
+        Maps = mapsResponse.Maps.OrderByDescending(x => x.CreatedAt).ToList();
         LoadingState = MapLoadingState.Loaded;
 
         StateHasChanged();

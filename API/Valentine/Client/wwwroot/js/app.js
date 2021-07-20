@@ -1,12 +1,10 @@
 ﻿var map;
 
 function InitializeControls(boundsNE, boundsSW) {
-    debugger;
     InitializeMapBox(boundsNE, boundsSW);
 }
 
 function SetMapAreasData(areas) {
-    console.log(areas);
     map.getSource('areas').setData(areas);
 }
 
