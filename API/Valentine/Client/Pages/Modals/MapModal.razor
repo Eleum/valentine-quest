@@ -1,11 +1,19 @@
-﻿@using Valentine.Client.FormModels
+﻿@using Valentine.Client.States
+@using Valentine.Client.FormModels
+@using Valentine.Client.Extensions
+@using Valentine.Client.Helpers
+@using Valentine.Shared.Contracts.Requests
+@using Valentine.Shared.Contracts.Responses
+@inject IJSRuntime JS 
+@inject IHttpClientFactory ClientFactory
+@inject MapSelectionState MapSelectionState;
 
 <div class="modal fade" id="app-map-modal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="app-map-label" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="app-map-label">New map</h5>
-                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#app-key-modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" id="app-map-modal-close" data-bs-toggle="modal" data-bs-target="#app-key-modal" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <EditForm id="app-map-form" EditContext="@EditContext" OnValidSubmit="@SubmitHandler">
@@ -14,7 +22,6 @@
                     <div class="form-group mb-2" id="app-map-title-group">
                         <label for="app-map-title">Title</label>
                         <InputText class="form-control" id="app-map-title" placeholder="Enter map title" @bind-Value="NewMapModel.Title" />
-                        <div class="invalid-feedback">Please provide a map title</div>
                     </div>
                     <div class="form-group mb-2">
                         <label for="app-map-location">Location</label>
@@ -25,13 +32,13 @@
                             }
                         </InputSelect>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group mb-2">
                         <label for="app-map-description">Description</label>
                         <InputTextArea class="form-control" id="app-map-description" rows="2" placeholder="Enter map description" @bind-Value="NewMapModel.Description" />
                     </div>
                     <div class="custom-control custom-checkbox mb-1">
-                        <input type="checkbox" class="custom-control-input" id="app-map-default">
                         <label for="app-map-default" class="custom-control-label">Set as default map</label>
+                        <InputCheckbox class="custom-control-input" id="app-map-default" @bind-Value="NewMapModel.IsDefault" />
                     </div>
                     <p>
                         <small class="text-muted">
@@ -39,7 +46,11 @@
                             provided app key
                         </small>
                     </p>
-                    <div class="form-group d-flex justify-content-end">
+                    <div class="form-group d-flex justify-content-end align-items-center">
+                        @if (!string.IsNullOrWhiteSpace(StatusCode))
+                        {
+                            <p class="text-danger m-0">Error occured</p>
+                        }
                         <button type="submit" class="btn btn-primary btn-block">Add</button>
                     </div>
                 </EditForm>
@@ -49,23 +60,46 @@
 </div>
 
 @code {
-    private List<string> Cities = new() { "Minsk", "Custom" };
-    private NewMapModel NewMapModel = new();
+    [Parameter]
+    public Guid UserId { get; set; }
+
     private EditContext EditContext;
+    private NewMapModel NewMapModel = new();
+
+    private List<string> Cities = new() { "Minsk", "Custom" };
+    private string StatusCode { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         EditContext = new(NewMapModel);
         NewMapModel.Location = Cities[0];
-
-        var fieldIdentifier = EditContext.Field(nameof(NewMapModel.Location));
-        EditContext.NotifyFieldChanged(fieldIdentifier);
+        EditContext.OnPropertyChanged(nameof(NewMapModel.Location));
 
         await base.OnInitializedAsync();
     }
 
-    private void SubmitHandler()
+    private async Task SubmitHandler()
     {
+        StatusCode = string.Empty;
 
+        var request = new MapSaveRequest
+        {
+            UserId = UserId.ToString(),
+            Title = NewMapModel.Title,
+            Description = NewMapModel.Description,
+            IsDefault = NewMapModel.IsDefault
+        };
+
+        var api = ClientFactory.CreateClient(Constants.Api.WEB_API);
+
+        var response = await api.PostAsync("api/maps", JsonContent.Create<MapSaveRequest>(request));
+        if (!response.IsSuccessStatusCode)
+        {
+            StatusCode = response.StatusCode.ToString();
+            return;
+        }
+
+        await JS.InvokeVoidAsync("ReturnToAppKeyModalAsync");
+        await MapSelectionState.RegisterNewMapCreatedAsync();
     }
 }

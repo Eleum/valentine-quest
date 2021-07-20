@@ -14,10 +14,10 @@ namespace Valentine.Shared.Contracts.Responses
     {
         public Guid Id { get; set; }
 
-        public IEnumerable<GeoPoint> GeoPoints { get; set; }
+        public IEnumerable<GeoPointItem> GeoPoints { get; set; }
     }
 
-    public class GeoPoint
+    public class GeoPointItem
     {
         public double Latitude { get; set; }
 
@@ -25,7 +25,7 @@ namespace Valentine.Shared.Contracts.Responses
 
         public int Position { get; set; }
 
-        public GeoPoint(double latitude, double longitude, int position)
+        public GeoPointItem(double latitude, double longitude, int position)
         {
             Latitude = latitude;
             Longitude = longitude;

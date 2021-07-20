@@ -1,7 +1,16 @@
 ﻿@page "/map"
 @using Valentine.Client.Pages.Modals
 
-<AppKeyModal />
-<MapModal />
+<AppKeyModal OnUserLogin="OnUserLoginHandler" />
+<MapModal UserId="UserId" />
 
 <Map />
+
+@code {
+    private Guid UserId { get; set; }
+
+    public void OnUserLoginHandler(Guid userId)
+    {
+        UserId = userId;
+    }
+}

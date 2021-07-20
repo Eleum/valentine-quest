@@ -28,6 +28,7 @@
     <ProjectReference Include="..\Valentine.Application\Valentine.Application.csproj" />
     <ProjectReference Include="..\Valentine.Domain\Valentine.Domain.csproj" />
     <ProjectReference Include="..\Valentine.Persistence\Valentine.Persistence.csproj" />
+    <ProjectReference Include="..\Valentine\Shared\Valentine.Shared.csproj" />
   </ItemGroup>
 
 

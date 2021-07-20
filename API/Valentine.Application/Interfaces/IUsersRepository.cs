@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Valentine.Domain;
 
 namespace Valentine.Application.Interfaces
 {
-    public interface IMapsRepository
+    public interface IUsersRepository
     {
-        Task<IEnumerable<Map>> GetUserMapsAsync(Guid userId);
-
-        Task<int> SaveMapAsync(Map map);
+        User GetUserWithAppKey(string appKey);
     }
 }

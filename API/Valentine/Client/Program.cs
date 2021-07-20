@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Valentine.Application.Interfaces;
 using Valentine.Application.Services;
 using Valentine.Client.Helpers;
+using Valentine.Client.States;
 
 namespace Valentine.Client
 {
@@ -27,6 +28,7 @@ namespace Valentine.Client
                 client.BaseAddress = new Uri("https://localhost:44399/"));
 
             builder.Services.AddScoped<ILayoutService, LayoutService>();
+            builder.Services.AddScoped(typeof(MapSelectionState));
 
             await builder.Build().RunAsync();
         }

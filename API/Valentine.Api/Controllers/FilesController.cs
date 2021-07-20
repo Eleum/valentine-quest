@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Valentine.Api.Contracts.Requests;
+using Valentine.Shared.Contracts.Requests;
 using Valentine.Api.Interfaces;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
+using Microsoft.AspNetCore.Http;
 
 namespace Valentine.Api.Controllers
 {
@@ -40,7 +41,7 @@ namespace Valentine.Api.Controllers
 
             for (int i = 0; i < request.Files?.Length; i++)
             {
-                var file = request.Files[i];
+                var file = (IFormFile)request.Files[i];
                 var fileId = Guid.Parse(request.Ids[i]);
                 var areaId = Guid.Parse(request.AreaId);
 

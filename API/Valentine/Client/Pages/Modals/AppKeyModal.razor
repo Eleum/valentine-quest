@@ -1,12 +1,14 @@
-﻿@using Valentine.Client.Helpers
-@using Valentine.Client.Enums
+﻿@using Valentine.Client.Enums
+@using Valentine.Client.States
+@using Valentine.Client.Helpers
 @using Valentine.Application.Interfaces
 @using Valentine.Shared.Contracts.Responses
 @inject IJSRuntime JS
 @inject IHttpClientFactory ClientFactory
 @inject ILayoutService LayoutService
+@inject MapSelectionState MapSelectionState
+@implements IDisposable
 
-<button id="welcome-modal-toggler" data-bs-toggle="modal" data-bs-target="#app-key-modal" hidden></button>
 <div class="modal fade" id="app-key-modal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="app-key-label" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -63,7 +65,7 @@
                     </div>
                     <p class="text-center mt-2 mb-0">
                         or you can
-                        <button class="btn btn-link p-0 border-0 align-baseline text-decoration-none" @onclick="ReloadAppKey">reenter app key</button>
+                        <button class="btn btn-link p-0 border-0 align-baseline text-decoration-none" @onclick="ReloadModal">reenter app key</button>
                     </p>
                 }
                 else
@@ -71,7 +73,7 @@
                     <form id="form-app-key">
                         <div class="form-group">
                             <label for="app-key-input" class="col-form-label">App key</label>
-                            <input id="app-key-input" type="text" class="form-control" @bind="InputValue">
+                            <input type="text" class="form-control" id="app-key-input" @bind="InputValue" />
                             <div class="invalid-feedback">The app key is not valid</div>
                         </div>
                     </form>
@@ -91,23 +93,37 @@
 @code {
     private HttpClient _api;
 
+    [Parameter]
+    public EventCallback<Guid> OnUserLogin { get; set; }
+
     private List<MapsCollectionItem> Maps { get; set; }
 
     private string InputValue { get; set; } = "1";
     private string StatusCode { get; set; } = string.Empty;
+
+    private int counter = 0;
 
     private MapLoadingState LoadingState { get; set; }
 
     protected override void OnInitialized()
     {
         _api = ClientFactory.CreateClient(Constants.Api.WEB_API);
+
+        MapSelectionState.OnNewMapCreatedAsync += GetUserMapsAsync;
+
         base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        MapSelectionState.OnNewMapCreatedAsync -= GetUserMapsAsync;
     }
 
     private async Task GetUserMapsAsync()
     {
         if (string.IsNullOrWhiteSpace(InputValue)) return;
-        LoadingState = MapLoadingState.NotLoaded;
+
+        ReloadModal();
 
         //TODO: spinner and block the button while await
         var response = await _api.GetAsync($"api/maps?appKey={InputValue}");
@@ -120,17 +136,20 @@
         var mapsResponse = await response.Content.ReadFromJsonAsync<MapsFetchResponse>();
         if (mapsResponse is null) return;
 
-        //Maps = mapsResponse.Maps.ToList();
-        LoadingState = MapLoadingState.Loaded;
-    }
+        await OnUserLogin.InvokeAsync(mapsResponse.UserId);
 
-    private void ReloadAppKey()
-    {
-        LoadingState = MapLoadingState.NotLoaded;
+        if (++counter > 1)
+            Maps = mapsResponse.Maps.OrderByDescending(x => x.CreatedAt).ToList();
+
+        LoadingState = MapLoadingState.Loaded;
+
+        StateHasChanged();
     }
 
     private async Task LoadMapAreasAsync(string mapId)
     {
+        StatusCode = string.Empty;
+
         var response = await _api.GetAsync($"api/areas?mapId={mapId}");
         if (!response.IsSuccessStatusCode)
         {
@@ -143,5 +162,11 @@
 
         await JS.InvokeVoidAsync("ShowHideAppKeyModal", false);
         await JS.InvokeVoidAsync("SetMapAreasData", constructedAreas);
+    }
+
+    private void ReloadModal()
+    {
+        LoadingState = MapLoadingState.NotLoaded;
+        StatusCode = string.Empty;
     }
 }

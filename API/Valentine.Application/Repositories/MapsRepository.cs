@@ -17,21 +17,13 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<KeyValuePair<Guid, IEnumerable<Map>>?> GetMapsByAppKey(string appKey)
+        public async Task<IEnumerable<Map>> GetUserMapsAsync(Guid userId)
         {
-            var user = _dbContext.Users.FirstOrDefault(x => x.AppKey == appKey);
-            return user is null 
-                ? null
-                : new KeyValuePair<Guid, IEnumerable<Map>>(
-                    user.Id, 
-                    await _dbContext.Maps.Where(x => x.UserId == user.Id).Include(a => a.Areas).ToListAsync());
+            return await _dbContext.Maps.Where(x => x.UserId == userId).Include(a => a.Areas).ToListAsync();        
         }
 
-        public async Task<int> SaveMap(Map map)
+        public async Task<int> SaveMapAsync(Map map)
         {
-            var user = _dbContext.Users.FirstOrDefaultAsync(x => x.Id == map.UserId);
-            if (user is null) throw new ArgumentException("The user id is not valid");
-
             _dbContext.Maps.Add(map);
             return await _dbContext.SaveChangesAsync();
         }

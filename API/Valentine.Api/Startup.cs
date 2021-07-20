@@ -31,16 +31,18 @@ namespace Valentine.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.RegisterAzureBlobStorage(Configuration);
-
             services.AddScoped<IValentineDbContext, ValentineDbContext>();
-            services.AddScoped<IFileProcessor, FileProcessor>();
-            //services.AddScoped<IFileCloudUploader, FileCloudUploader>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IMapsRepository, MapsRepository>();
             services.AddScoped<IMapsRepository, MapsRepository>();
             services.AddScoped<IAreasRepository, AreasRepository>();
             services.AddScoped<IGeoPointsRepository, GeoPointsRepository>();
             services.AddScoped<IFilesRepository, FilesRepository>();
-            
+            services.AddScoped<IFileProcessor, FileProcessor>();
+            //services.AddScoped<IFileCloudUploader, FileCloudUploader>();
+
+            //services.RegisterAzureBlobStorage(Configuration);
+
             services.AddControllers();
             services.AddCors(options =>
             {

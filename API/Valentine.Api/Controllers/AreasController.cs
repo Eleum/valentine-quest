@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Valentine.Api.Contracts.Requests;
-using Valentine.Api.Contracts.Responses;
+using Valentine.Shared.Contracts.Requests;
+using Valentine.Shared.Contracts.Responses;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
 
@@ -35,7 +35,7 @@ namespace Valentine.Api.Controllers
             var responseAreas = areas.Select(x => new AreasCollectionItem
             {
                 Id = x.Id,
-                GeoPoints = areas.Where(a => a.Id == x.Id).SelectMany(x => x.GeoPoints).Select(x => new AreaGeoPoint(x.Latitude, x.Longitude, x.Position))
+                GeoPoints = areas.Where(a => a.Id == x.Id).SelectMany(x => x.GeoPoints).Select(x => new GeoPointItem(x.Latitude, x.Longitude, x.Position))
             });
 
             var response = new AreasFetchResponse { Areas = responseAreas };
@@ -58,7 +58,7 @@ namespace Valentine.Api.Controllers
 
             await _areasRepository.SaveAreasAsync(areas);
             await _geoPointsRepository.SaveAreaGeoPoints(geoPoints);
-            return Ok(); 
+            return Ok();
         }
     }
 }
