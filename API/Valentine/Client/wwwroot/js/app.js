@@ -1,5 +1,36 @@
 ﻿var map;
 
+function InitializeControls(longitude, latitude) {
+    InitializeMapBox(longitude, latitude)
+    InitializeModals();
+}
+
+function InitializeModals() {
+    $('#app-map-form').submit(event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        $('#app-map-title-group').removeClass('was-validated');
+        $('#app-map-title-group').addClass('was-validated');
+
+        if ($('#app-map-form')[0].checkValidity() === false) {
+            return;
+        }
+
+        this.addNewMap(
+            $('#app-map-title').val(),
+            $.trim($('#app-map-description').val()),
+            $('#app-map-default')[0].checked
+        );
+    });
+
+    $('#app-map-title').keydown(event => {
+        if (event.which === 32 && $.trim($('#app-map-title').val()) === '') {
+            event.preventDefault();
+        }
+    });
+}
+
 function InitializeMapBox(longitude, latitude) {
     mapboxgl.accessToken = 'pk.eyJ1IjoibmV2ZXJlbmQxbmciLCJhIjoiY2tyOW43aXl3MTkweDJwbHA1NzlwYjRmaiJ9.hl5K_rQCEC81k1Fp3RjXGg';
     map = new mapboxgl.Map({
@@ -13,7 +44,8 @@ function InitializeMapBox(longitude, latitude) {
     });
 
     map.on('load', async () => {
-        ShowHideAppKeyModal(true);
+        $("#welcome-modal-toggler").click();
+        /*ShowHideAppKeyModal(true);*/
 
         map.addSource('areas', {
             'type': 'geojson',

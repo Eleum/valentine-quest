@@ -1,0 +1,72 @@
+﻿@using Valentine.Client.FormModels
+
+<div class="modal fade" id="app-map-modal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="app-map-label" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="app-map-label">New map</h5>
+                <button type="button" class="btn-close" data-bs-toggle="modal" data-bs-target="#app-key-modal" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm id="app-map-form" EditContext="@EditContext" OnValidSubmit="@SubmitHandler">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group mb-2" id="app-map-title-group">
+                        <label for="app-map-title">Title</label>
+                        <InputText class="form-control" id="app-map-title" placeholder="Enter map title" @bind-Value="NewMapModel.Title" />
+                        <div class="invalid-feedback">Please provide a map title</div>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="app-map-location">Location</label>
+                        <InputSelect class="form-control" id="app-map-location" @bind-Value="NewMapModel.Location">
+                            @foreach (var city in Cities)
+                            {
+                                <option value="@city" disabled="@(city == "Custom")">@city</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="form-group">
+                        <label for="app-map-description">Description</label>
+                        <InputTextArea class="form-control" id="app-map-description" rows="2" placeholder="Enter map description" @bind-Value="NewMapModel.Description" />
+                    </div>
+                    <div class="custom-control custom-checkbox mb-2">
+                        <input type="checkbox" class="custom-control-input" id="app-map-default">
+                        <label for="app-map-default" class="custom-control-label">Set as default map</label>
+                    </div>
+                    <p>
+                        <small class="text-muted">
+                            Setting a map as default map will lead to its automatic load on the next usage of
+                            provided app key
+                        </small>
+                    </p>
+                    <div class="form-group d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-block">Add</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<string> Cities = new() { "Minsk", "Custom" };
+    private NewMapModel NewMapModel = new();
+    private EditContext EditContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditContext = new(NewMapModel);
+        NewMapModel.Location = Cities[0];
+
+        var fieldIdentifier = EditContext.Field(nameof(NewMapModel.Location));
+        EditContext.NotifyFieldChanged(fieldIdentifier);
+
+        await base.OnInitializedAsync();
+    }
+
+
+    private void SubmitHandler()
+    {
+
+    }
+}

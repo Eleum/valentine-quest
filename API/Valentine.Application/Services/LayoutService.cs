@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Valentine.Application.Enums;
+using Valentine.Application.Helpers;
 using Valentine.Application.Interfaces;
 using Valentine.Application.Models;
 using Valentine.Shared.Contracts.Responses;
@@ -41,8 +42,8 @@ namespace Valentine.Application.Services
                 Geometry = new Geometry(FeatureType.Polygon, x.Points),
                 Properties = new Dictionary<string, object>
                 {
-                    { "id", x.Id },
-                    { "completion", new Random().Next(0, 101) }
+                    { Constants.Properties.ID, x.Id },
+                    { Constants.Properties.COMPLETION, new Random().Next(0, 50) }
                 }
             });
         }
