@@ -15,7 +15,8 @@
 
         AddFeatureHeart(map);
         AddSources(map);
-        AddLayers(map);
+        AddLayersData(map);
+        AddLayersAnimation(map);
     });
 }
 
@@ -24,7 +25,7 @@ function AddSources(map) {
     
 }
 
-function AddLayers(map) {
+function AddLayersData(map) {
     AddLayersAreas(map);
     
 }
