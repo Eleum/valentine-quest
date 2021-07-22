@@ -1,20 +1,22 @@
-﻿@using Valentine.Application.Interfaces 
+﻿@using Valentine.Application.Interfaces
 @inject IJSRuntime JS
 @inject ILayoutService LayoutService
 
-<div class="position-absolute p-2 bottom-0 end-0" aria-live="polite" aria-atomic="true">
-    <div id="area-generator" class="toast fade hide bg-light" data-bs-autohide="false" data-bs-animation="true">
-        <div class="toast-header">
-            <strong class="me-auto">Areas generator</strong>
-            <small>Settings</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            <h5>Next step: Generate map areas</h5>
-            <p class="text-muted">You may run this process multiple times if needed</p>
-            <div class="pt-2 border-top">
-                <button type="button" class="btn btn-outline-dark" @onclick="GenerateRandomMapLayout">Generate areas</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="toast" disabled="@(!Generated)">Accept this</button>
+<div aria-live="polite" aria-atomic="true">
+    <div class="toast-container position-absolute p-2 bottom-0 end-0">
+        <div id="area-generator" class="toast fade hide bg-light" data-bs-autohide="false" data-bs-animation="true">
+            <div class="toast-header">
+                <strong class="me-auto">Areas generator</strong>
+                <small>Settings</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <h5>Next step: Generate map areas</h5>
+                <p class="text-muted">You may run this process multiple times if needed</p>
+                <div class="pt-2 border-top">
+                    <button type="button" class="btn btn-outline-dark" @onclick="GenerateRandomMapLayout">Generate areas</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="toast" disabled="@(!Generated)">Accept this</button>
+                </div>
             </div>
         </div>
     </div>
