@@ -11,12 +11,20 @@
     });
 
     map.on('load', async () => {
-        ShowHideAppKeyModal(true);
+        TriggerAppKeyModal(true);
 
         AddFeatureHeart(map);
         AddSources(map);
         AddLayersData(map);
         AddLayersAnimation(map);
+    });
+
+    map.on('mouseenter', 'areas', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'areas', () => {
+        map.getCanvas().style.cursor = '';
     });
 }
 

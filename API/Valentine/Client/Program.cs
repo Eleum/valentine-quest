@@ -28,7 +28,7 @@ namespace Valentine.Client
                 client.BaseAddress = new Uri("https://localhost:44399/"));
 
             builder.Services.AddScoped<ILayoutService, LayoutService>();
-            builder.Services.AddScoped(typeof(MapSelectionState));
+            builder.Services.AddScoped(typeof(MapInteractionState));
 
             await builder.Build().RunAsync();
         }

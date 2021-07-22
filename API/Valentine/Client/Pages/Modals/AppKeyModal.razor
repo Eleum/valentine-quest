@@ -1,4 +1,5 @@
-﻿@using Valentine.Client.Enums
+﻿@using System.Linq
+@using Valentine.Client.Enums
 @using Valentine.Client.States
 @using Valentine.Client.Helpers
 @using Valentine.Application.Interfaces
@@ -6,7 +7,7 @@
 @inject IJSRuntime JS
 @inject IHttpClientFactory ClientFactory
 @inject ILayoutService LayoutService
-@inject MapSelectionState MapSelectionState
+@inject MapInteractionState MapInteractionState
 @implements IDisposable
 
 <div class="modal fade" id="app-key-modal" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="app-key-label" aria-hidden="true" tabindex="-1">
@@ -50,7 +51,7 @@
                             <ul class="list-group" id="maps-list">
                                 @foreach (var map in Maps)
                                 {
-                                    <button class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed" @onclick="@(() => LoadMapAreasAsync(map.Id.ToString()))">
+                                    <button class="list-group-item list-group-item-action d-flex justify-content-between lh-condensed" @onclick="@(() => LoadMapAreasAsync(map.Id))">
                                         <div>
                                             <h6 class="my-0">@map.Title</h6>
                                             <small class="text-muted">@map.Description</small>
@@ -96,6 +97,7 @@
     [Parameter]
     public EventCallback<Guid> OnUserLogin { get; set; }
 
+    //TODO: do not use response class
     private List<MapsCollectionItem> Maps { get; set; }
 
     private string InputValue { get; set; } = "1";
@@ -107,14 +109,14 @@
     {
         _api = ClientFactory.CreateClient(Constants.Api.WEB_API);
 
-        MapSelectionState.OnNewMapCreatedAsync += GetUserMapsAsync;
+        MapInteractionState.OnNewMapCreatedAsync += GetUserMapsAsync;
 
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        MapSelectionState.OnNewMapCreatedAsync -= GetUserMapsAsync;
+        MapInteractionState.OnNewMapCreatedAsync -= GetUserMapsAsync;
     }
 
     private async Task GetUserMapsAsync()
@@ -142,11 +144,13 @@
         StateHasChanged();
     }
 
-    private async Task LoadMapAreasAsync(string mapId)
+    private async Task LoadMapAreasAsync(Guid mapId)
     {
         StatusCode = string.Empty;
+        await MapInteractionState.HandleMapSelectionAsync(Maps.First(x => x.Id == mapId));
 
-        var response = await _api.GetAsync($"api/areas?mapId={mapId}");
+        //TODO: test ERR_CONNECTION_REFUSED
+        var response = await _api.GetAsync($"api/areas?mapId={mapId.ToString()}");
         if (!response.IsSuccessStatusCode)
         {
             StatusCode = response.StatusCode.ToString();
@@ -154,10 +158,10 @@
         }
 
         var areasResponse = await response.Content.ReadFromJsonAsync<AreasFetchResponse>();
-        var constructedAreas = LayoutService.InitializeMapAreas(areasResponse.Areas);
+        var areas = LayoutService.InitializeMapAreas(areasResponse.Areas);
 
-        await JS.InvokeVoidAsync("ShowHideAppKeyModal", false);
-        await JS.InvokeVoidAsync("SetMapAreasData", constructedAreas);
+        await JS.InvokeVoidAsync("TriggerAppKeyModal", false);
+        await JS.InvokeVoidAsync("SetMapAreasData", areas);
     }
 
     private void ReloadModal()

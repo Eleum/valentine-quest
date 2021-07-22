@@ -1,12 +1,36 @@
 ﻿@using Valentine.Client.Helpers
+@using Valentine.Client.States
+@using Valentine.Shared.Contracts.Responses
 @inject IJSRuntime JS
+@inject MapInteractionState MapInteractionState
+@implements IDisposable
 
 <div id='map'></div>
 
-@code {      
+@code {
+    private MapsCollectionItem SelectedMap { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+        MapInteractionState.OnMapSelectedAsync += (map) => SelectMap(map);
+
         await Task.Delay(10);
         await JS.InvokeVoidAsync("InitializeControls", Constants.Coordinates.NE, Constants.Coordinates.SW);
+    }
+
+    private async Task SelectMap(MapsCollectionItem map)
+    {
+        SelectedMap = map;
+
+        if ((map?.OverallProgress ?? 0) == -1D)
+        {
+            await JS.InvokeVoidAsync("TriggerToastr", "#area-generator", true);
+            return;
+        }
+    }
+
+    public void Dispose()
+    {
+        MapInteractionState.OnMapSelectedAsync -= (map) => SelectMap(map);
     }
 }

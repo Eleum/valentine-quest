@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Client", "Valenti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Shared", "Valentine\Shared\Valentine.Shared.csproj", "{1436F80E-4C89-41A3-B950-CA5051054450}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valentine.Tests", "Valentine.Tests\Valentine.Tests.csproj", "{1C02E291-A553-49A2-AE4D-79E16E14DF1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valentine.Tests", "Valentine.Tests\Valentine.Tests.csproj", "{1C02E291-A553-49A2-AE4D-79E16E14DF1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

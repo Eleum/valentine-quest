@@ -19,11 +19,27 @@ async function ReturnToAppKeyModalAsync() {
     await shownPromise;
 }
 
-function ShowHideAppKeyModal(show) {
+function TriggerAppKeyModal(show) {
     if (show) {
         $('#app-key-modal').modal('show')
         return;
     }
 
     $('#app-key-modal').modal('hide')
+}
+
+function TriggerToastr(elementId, show) {
+    setTimeout(() => {
+        if (show) {
+            $(elementId).toast('show');
+            return;
+        }
+        $(elementId).toast('hide');
+    }, 0);
+}
+
+function ShowLayoutToast() {
+    setTimeout(() => {
+        $('#area-generator').toast('show');
+    }, 0);
 }

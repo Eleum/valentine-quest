@@ -9,6 +9,7 @@ namespace Valentine.Shared.Contracts.Responses
     {
         public Guid UserId { get; set; }
 
+        //TODO: create separate collection
         public IEnumerable<MapsCollectionItem> Maps { get; set; }
     }
 

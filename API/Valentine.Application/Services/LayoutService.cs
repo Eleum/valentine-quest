@@ -13,9 +13,9 @@ namespace Valentine.Application.Services
 {
     public class LayoutService : ILayoutService
     {
-        public FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreasCollectionItem> rawAreas)
+        public FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreasCollectionItem> rawAreasData)
         {
-            var areas = CreateAreas(rawAreas);
+            var areas = CreateAreas(rawAreasData);
             var polygons = CreatePolygons(areas);
 
             return new FeatureCollection<Polygon>
@@ -25,9 +25,9 @@ namespace Valentine.Application.Services
             };
         }
 
-        private IEnumerable<Area> CreateAreas(IEnumerable<AreasCollectionItem> rawAreas)
+        private IEnumerable<Area> CreateAreas(IEnumerable<AreasCollectionItem> rawAreasData)
         {
-            return rawAreas.Select(x => new Area
+            return rawAreasData.Select(x => new Area
             {
                 Id = x.Id.ToString(),
                 Points = x.GeoPoints.OrderByDescending(p => p.Position).Select(p => new[] { p.Latitude, p.Longitude })

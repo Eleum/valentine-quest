@@ -6,6 +6,6 @@ namespace Valentine.Application.Interfaces
 {
     public interface ILayoutService
     {
-        FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreasCollectionItem> rawAreas);
+        FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreasCollectionItem> rawAreasData);
     }
 }
