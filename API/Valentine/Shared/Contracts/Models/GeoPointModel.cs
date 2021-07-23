@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Valentine.Domain
+namespace Valentine.Shared.Contracts.Models
 {
-    public class GeoPoint
+    public class GeoPointModel
     {
-        public Guid Id { get; init; }
-
-        public Guid AreaId { get; set; }
+        public string AreaId { get; set; }
 
         public int Index { get; set; }
 
@@ -16,9 +16,8 @@ namespace Valentine.Domain
 
         public double Longitude { get; set; }
 
-        public GeoPoint(Guid areaId, int index, double latitude, double longitude)
+        public GeoPointModel(string areaId, int index, double latitude, double longitude)
         {
-            Id = Guid.NewGuid();
             AreaId = areaId;
             Index = index;
             Latitude = latitude;

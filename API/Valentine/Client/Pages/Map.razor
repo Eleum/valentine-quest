@@ -1,6 +1,6 @@
 ﻿@using Valentine.Client.Helpers
 @using Valentine.Client.States
-@using Valentine.Shared.Contracts.Responses
+@using Valentine.Shared.Contracts.Models
 @inject IJSRuntime JS
 @inject MapInteractionState MapInteractionState
 @implements IDisposable
@@ -8,7 +8,7 @@
 <div id='map'></div>
 
 @code {
-    private MapsCollectionItem SelectedMap { get; set; }
+    private MapModel SelectedMap { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -18,7 +18,7 @@
         await JS.InvokeVoidAsync("InitializeControls", Constants.Coordinates.NE, Constants.Coordinates.SW);
     }
 
-    private async Task SelectMap(MapsCollectionItem map)
+    private async Task SelectMap(MapModel map)
     {
         SelectedMap = map;
 

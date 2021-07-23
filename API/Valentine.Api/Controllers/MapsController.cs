@@ -9,6 +9,7 @@ using Valentine.Shared.Contracts.Requests;
 using Valentine.Shared.Contracts.Responses;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
+using Valentine.Shared.Contracts.Models;
 
 namespace Valentine.Api.Controllers
 {
@@ -26,7 +27,7 @@ namespace Valentine.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetExistingMaps([FromQuery]MapsFetchRequest request)
+        public async Task<IActionResult> GetExistingMaps([FromQuery]MapsRequest request)
         {
             if (request.AppKey is null) return BadRequest();
 
@@ -43,21 +44,17 @@ namespace Valentine.Api.Controllers
             }
 
             var userMapsCollection = await _mapsRepository.GetUserMapsAsync(user.Id);
-            var response = new MapsFetchResponse
+            var response = new MapsResponse
             {
                 UserId = user.Id,
-                Maps = userMapsCollection.Select(x => new MapsCollectionItem(x.Id, x.Title, x.Description, x.CreatedAt) 
+                Maps = userMapsCollection.Select(x => new MapModel(x.Id.ToString(), x.Title, x.Description, x.CreatedAt) 
                 { 
                     OverallProgress = (x.Areas?.Count ?? 0) == 0 ? -1D : x.Areas.Sum(a => a.Progress) / x.Areas.Count * 100
                 })
             };
 
             //TODO: global serializer settings
-            return Ok(JsonConvert.SerializeObject(response, new JsonSerializerSettings 
-            { 
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Formatting = Formatting.Indented
-            }));
+            return Ok(JsonConvert.SerializeObject(response));
         }
 
         [HttpPost]

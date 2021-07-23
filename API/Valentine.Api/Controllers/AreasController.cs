@@ -9,6 +9,7 @@ using Valentine.Shared.Contracts.Requests;
 using Valentine.Shared.Contracts.Responses;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
+using Valentine.Shared.Contracts.Models;
 
 namespace Valentine.Api.Controllers
 {
@@ -26,38 +27,34 @@ namespace Valentine.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAreas([FromQuery]AreasFetchRequest request)
+        public async Task<IActionResult> GetAreas([FromQuery]AreasRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.MapId))
                 return BadRequest();
 
-            var areas = await _areasRepository.GetAreas(Guid.Parse(request.MapId));
-            var responseAreas = areas.Select(x => new AreasCollectionItem
+            var areasData = await _areasRepository.GetAreas(Guid.Parse(request.MapId));
+            var areas = areasData.Select(x => new AreaModel
             {
                 Id = x.Id,
-                GeoPoints = areas.Where(a => a.Id == x.Id).SelectMany(x => x.GeoPoints).Select(x => new GeoPointItem(x.Latitude, x.Longitude, x.Position))
+                GeoPoints = x.GeoPoints.Select(x => new GeoPointModel(x.AreaId.ToString(), x.Index, x.Latitude, x.Longitude))
             });
 
-            var response = new AreasFetchResponse { Areas = responseAreas };
-            return Ok(JsonConvert.SerializeObject(response, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
+            return Ok(JsonConvert.SerializeObject(new AreasResponse { Areas = areas }));
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveAreas([FromBody]AreasSaveRequest request)
         {
-            //TODO: deal with mapid for areas
-            var areas = request.Data
-                .Select(x => x.AreaId)
-                .Distinct()
-                .Select(x => new Area(Guid.Parse(x), Guid.Parse("5C6949EB-B7CB-4C39-8F6A-B989A4936B58")));
+            var areas = request.GeoPoints
+                .GroupBy(x => x.AreaId)
+                .Select(x => x.First())
+                .Select(x => new Area(Guid.Parse(x.AreaId), Guid.Parse(request.MapId)));
 
-            var geoPoints = request.Data.Select(x => new GeoPoint(Guid.Parse(x.AreaId), x.Position, x.Latitude, x.Longitude));
+            var geoPoints = request.GeoPoints.Select(x => new GeoPoint(Guid.Parse(x.AreaId), x.Index, x.Latitude, x.Longitude));
 
             await _areasRepository.SaveAreasAsync(areas);
-            await _geoPointsRepository.SaveAreaGeoPoints(geoPoints);
+            await _geoPointsRepository.SaveAreaGeoPointsAsync(geoPoints);
+
             return Ok();
         }
     }

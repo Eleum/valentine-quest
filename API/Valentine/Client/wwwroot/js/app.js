@@ -20,12 +20,14 @@ async function ReturnToAppKeyModalAsync() {
 }
 
 function TriggerAppKeyModal(show) {
-    if (show) {
-        $('#app-key-modal').modal('show')
-        return;
-    }
+    setTimeout(() => {
+        if (show) {
+            $('#app-key-modal').modal('show')
+            return;
+        }
 
-    $('#app-key-modal').modal('hide')
+        $('#app-key-modal').modal('hide')
+    }, 0);
 }
 
 function TriggerToastr(elementId, show) {
@@ -41,5 +43,11 @@ function TriggerToastr(elementId, show) {
 function ShowLayoutToast() {
     setTimeout(() => {
         $('#area-generator').toast('show');
+    }, 0);
+}
+
+function ShowNavigatorToast() {
+    setTimeout(() => {
+        $('#area-navigator').toast('show');
     }, 0);
 }

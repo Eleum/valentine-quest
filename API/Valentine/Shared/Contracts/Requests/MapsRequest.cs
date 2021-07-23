@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Valentine.Shared.Contracts.Requests
 {
-    public class MapsFetchRequest
+    public class MapsRequest
     {
         public string AppKey { get; set; }
     }

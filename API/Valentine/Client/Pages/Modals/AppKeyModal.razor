@@ -4,6 +4,7 @@
 @using Valentine.Client.Helpers
 @using Valentine.Application.Interfaces
 @using Valentine.Shared.Contracts.Responses
+@using Valentine.Shared.Contracts.Models
 @inject IJSRuntime JS
 @inject IHttpClientFactory ClientFactory
 @inject ILayoutService LayoutService
@@ -98,7 +99,8 @@
     public EventCallback<Guid> OnUserLogin { get; set; }
 
     //TODO: do not use response class
-    private List<MapsCollectionItem> Maps { get; set; }
+    // 24.07 ?????
+    private List<MapModel> Maps { get; set; }
 
     private string InputValue { get; set; } = "1";
     private string StatusCode { get; set; } = string.Empty;
@@ -133,23 +135,21 @@
             return;
         }
 
-        var mapsResponse = await response.Content.ReadFromJsonAsync<MapsFetchResponse>();
+        var mapsResponse = await response.Content.ReadFromJsonAsync<MapsResponse>();
         if (mapsResponse is null) return;
 
         await OnUserLogin.InvokeAsync(mapsResponse.UserId);
 
-        Maps = mapsResponse.Maps.OrderByDescending(x => x.CreatedAt).ToList();
+        Maps = mapsResponse.Maps.OrderByDescending(x => x.OverallProgress).ThenByDescending(x => x.CreatedAt).ToList();
         LoadingState = MapLoadingState.Loaded;
 
         StateHasChanged();
     }
 
-    private async Task LoadMapAreasAsync(Guid mapId)
+    private async Task LoadMapAreasAsync(string mapId)
     {
         StatusCode = string.Empty;
-        await MapInteractionState.HandleMapSelectionAsync(Maps.First(x => x.Id == mapId));
 
-        //TODO: test ERR_CONNECTION_REFUSED
         var response = await _api.GetAsync($"api/areas?mapId={mapId.ToString()}");
         if (!response.IsSuccessStatusCode)
         {
@@ -157,11 +157,13 @@
             return;
         }
 
-        var areasResponse = await response.Content.ReadFromJsonAsync<AreasFetchResponse>();
+        var areasResponse = await response.Content.ReadFromJsonAsync<AreasResponse>();
         var areas = LayoutService.InitializeMapAreas(areasResponse.Areas);
 
         await JS.InvokeVoidAsync("TriggerAppKeyModal", false);
         await JS.InvokeVoidAsync("SetMapAreasData", areas);
+
+        await MapInteractionState.HandleMapSelectionAsync(Maps.Single(x => x.Id == mapId));
     }
 
     private void ReloadModal()

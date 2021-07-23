@@ -10,6 +10,6 @@ namespace Valentine.Application.Models
     {
         public string Id { get; set; }
 
-        public IEnumerable<double[]> Points { get; set; }
+        public GeoPointCoordsCollection Points { get; set; }
     }
 }

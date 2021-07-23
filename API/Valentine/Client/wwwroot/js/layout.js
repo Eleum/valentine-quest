@@ -5,6 +5,7 @@
     );
 
     this.map.getSource('areas').setData(areas);
+    return areas;
 }
 
 function GenerateAreas(heartPoints, heartPolygon) {

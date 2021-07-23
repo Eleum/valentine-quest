@@ -5,9 +5,9 @@ namespace Valentine.Domain
 {
     public class Map
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
 
-        public Guid UserId { get; set; }
+        public Guid UserId { get; init; }
 
         public List<Area> Areas { get; set; }
 
@@ -17,6 +17,6 @@ namespace Valentine.Domain
 
         public bool IsDefault { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; init; }
     }
 }
