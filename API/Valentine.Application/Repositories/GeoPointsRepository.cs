@@ -14,7 +14,7 @@ namespace Valentine.Application.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<int> SaveAreaGeoPoints(IEnumerable<GeoPoint> geoPoints)
+        public async Task<int> SaveAreaGeoPointsAsync(IEnumerable<GeoPoint> geoPoints)
         {
             foreach (var geoPoint in geoPoints)
             {

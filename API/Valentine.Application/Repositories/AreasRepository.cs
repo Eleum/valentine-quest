@@ -22,7 +22,8 @@ namespace Valentine.Application.Repositories
         {
             return await _dbContext.Areas
                 .Where(x => x.MapId == mapId)
-                .Include(p => p.GeoPoints).ToListAsync();
+                .Include(p => p.GeoPoints)
+                .ToListAsync();
         }
 
         public async Task<int> SaveAreasAsync(IEnumerable<Area> areas)

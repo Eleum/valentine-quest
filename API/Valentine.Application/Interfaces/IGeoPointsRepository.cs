@@ -8,6 +8,6 @@ namespace Valentine.Application.Interfaces
 {
     public interface IGeoPointsRepository
     { 
-        Task<int> SaveAreaGeoPoints(IEnumerable<GeoPoint> geoPoints);
+        Task<int> SaveAreaGeoPointsAsync(IEnumerable<GeoPoint> geoPoints);
     }
 }

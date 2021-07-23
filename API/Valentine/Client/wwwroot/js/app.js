@@ -19,11 +19,35 @@ async function ReturnToAppKeyModalAsync() {
     await shownPromise;
 }
 
-function ShowHideAppKeyModal(show) {
-    if (show) {
-        $('#app-key-modal').modal('show')
-        return;
-    }
+function TriggerAppKeyModal(show) {
+    setTimeout(() => {
+        if (show) {
+            $('#app-key-modal').modal('show')
+            return;
+        }
 
-    $('#app-key-modal').modal('hide')
+        $('#app-key-modal').modal('hide')
+    }, 0);
+}
+
+function TriggerToastr(elementId, show) {
+    setTimeout(() => {
+        if (show) {
+            $(elementId).toast('show');
+            return;
+        }
+        $(elementId).toast('hide');
+    }, 0);
+}
+
+function ShowLayoutToast() {
+    setTimeout(() => {
+        $('#area-generator').toast('show');
+    }, 0);
+}
+
+function ShowNavigatorToast() {
+    setTimeout(() => {
+        $('#area-navigator').toast('show');
+    }, 0);
 }

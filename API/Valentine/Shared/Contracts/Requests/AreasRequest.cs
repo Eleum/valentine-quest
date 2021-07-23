@@ -1,6 +1,6 @@
 ﻿namespace Valentine.Shared.Contracts.Requests
 {
-    public class AreasFetchRequest
+    public class AreasRequest
     {
         public string MapId { get; set; }
     }

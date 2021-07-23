@@ -1,10 +1,14 @@
 ﻿@page "/map"
 @using Valentine.Client.Pages.Modals
+@using Valentine.Client.Pages.Popups
 
 <AppKeyModal OnUserLogin="OnUserLoginHandler" />
-<MapModal UserId="UserId" />
+<NewMapModal UserId="UserId" />
 
 <Map />
+
+<AreasGenerator />
+<AreaNavigator />
 
 @code {
     private Guid UserId { get; set; }

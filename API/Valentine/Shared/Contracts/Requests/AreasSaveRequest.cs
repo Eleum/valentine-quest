@@ -1,20 +1,12 @@
 ﻿using System.Collections.Generic;
+using Valentine.Shared.Contracts.Models;
 
 namespace Valentine.Shared.Contracts.Requests
 {
     public class AreasSaveRequest
     {
-        public IEnumerable<AreasSaveRequestModel> Data { get; set; }
-    }
+        public string MapId { get; set; }
 
-    public class AreasSaveRequestModel
-    {
-        public string AreaId { get; set; }
-
-        public int Position { get; set; }
-
-        public double Latitude { get; set; }
-
-        public double Longitude { get; set; }
-    }
+        public IEnumerable<GeoPointModel> GeoPoints { get; set; }
+    }    
 }

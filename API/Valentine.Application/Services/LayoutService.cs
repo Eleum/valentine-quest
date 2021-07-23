@@ -7,15 +7,16 @@ using Valentine.Application.Enums;
 using Valentine.Application.Helpers;
 using Valentine.Application.Interfaces;
 using Valentine.Application.Models;
+using Valentine.Shared.Contracts.Models;
 using Valentine.Shared.Contracts.Responses;
 
 namespace Valentine.Application.Services
 {
     public class LayoutService : ILayoutService
     {
-        public FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreasCollectionItem> rawAreas)
+        public FeatureCollection<Polygon> InitializeMapAreas(IEnumerable<AreaModel> areasData)
         {
-            var areas = CreateAreas(rawAreas);
+            var areas = CreateAreas(areasData);
             var polygons = CreatePolygons(areas);
 
             return new FeatureCollection<Polygon>
@@ -25,12 +26,14 @@ namespace Valentine.Application.Services
             };
         }
 
-        private IEnumerable<Area> CreateAreas(IEnumerable<AreasCollectionItem> rawAreas)
+        private IEnumerable<Area> CreateAreas(IEnumerable<AreaModel> areasData)
         {
-            return rawAreas.Select(x => new Area
+            return areasData.Select(x => new Area
             {
                 Id = x.Id.ToString(),
-                Points = x.GeoPoints.OrderByDescending(p => p.Position).Select(p => new[] { p.Latitude, p.Longitude })
+                Points = new GeoPointCoordsCollection(x.GeoPoints
+                    .OrderByDescending(p => p.Index)
+                    .Select(p => new GeoPointCoordinates(p.Latitude, p.Longitude)))
             });
         }
         
@@ -39,7 +42,7 @@ namespace Valentine.Application.Services
             return areas.Select(x => new Polygon
             {
                 Type = FeatureType.Feature,
-                Geometry = new Geometry(FeatureType.Polygon, x.Points),
+                Geometry = new Geometry(FeatureType.Polygon, Enumerable.Repeat(new GeoPointCoordsCollection(x.Points), 1)),
                 Properties = new Dictionary<string, object>
                 {
                     { Constants.Properties.ID, x.Id },

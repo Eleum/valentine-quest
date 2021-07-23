@@ -1,116 +1,116 @@
-﻿function AddFeatureHeart(map) {
+﻿const geoJsonHeartPoints = {
+    'type': 'FeatureCollection',
+    'features': [
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.47307399170134, 53.95398000106455]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.52078943603584, 53.95132860970111]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.556421840925708, 53.94088200384468]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.596762012691784, 53.97262788574715]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.637796122302973, 53.969194592551294]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.704922508801815, 53.93044212805984]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.673934377188004, 53.859921373043164]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.574525802199076, 53.83548617934562]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.46877178095783, 53.852118710423005]
+            }
+        },
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [27.410390949657664, 53.911338937344766]
+            }
+        },
+    ]
+};
+const geoJsonHeartPolygon = {
+    'type': 'FeatureCollection',
+    'features': [
+        {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [
+                    [
+                        [27.47307399170134, 53.95398000106455],
+                        [27.52078943603584, 53.95132860970111],
+                        [27.556421840925708, 53.94088200384468],
+                        [27.596762012691784, 53.97262788574715],
+                        [27.637796122302973, 53.969194592551294],
+                        [27.704922508801815, 53.93044212805984],
+                        [27.673934377188004, 53.859921373043164],
+                        [27.574525802199076, 53.83548617934562],
+                        [27.46877178095783, 53.852118710423005],
+                        [27.410390949657664, 53.911338937344766],
+                        [27.47307399170134, 53.95398000106455]
+                    ]
+                ]
+            }
+        },
+    ]
+};
+
+function AddFeatureHeart(map) {
     AddPulsingDot(map);
     AddSourceHeart(map);
     AddLayersHeart(map);
 }
 
 function AddSourceHeart(map) {
-    const geoJsonHeartPoints = {
-        'type': 'FeatureCollection',
-        'features': [
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.47307399170134, 53.95398000106455]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.52078943603584, 53.95132860970111]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.556421840925708, 53.94088200384468]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.596762012691784, 53.97262788574715]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.637796122302973, 53.969194592551294]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.704922508801815, 53.93044212805984]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.673934377188004, 53.859921373043164]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.574525802199076, 53.83548617934562]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.46877178095783, 53.852118710423005]
-                }
-            },
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [27.410390949657664, 53.911338937344766]
-                }
-            },
-        ]
-    };
     map.addSource('heart-points', {
         'type': 'geojson',
         'data': geoJsonHeartPoints
     });
-
-    const geoJsonHeartPolygon = {
-        'type': 'FeatureCollection',
-        'features': [
-            {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Polygon',
-                    'coordinates': [
-                        [
-                            [27.47307399170134, 53.95398000106455],
-                            [27.52078943603584, 53.95132860970111],
-                            [27.556421840925708, 53.94088200384468],
-                            [27.596762012691784, 53.97262788574715],
-                            [27.637796122302973, 53.969194592551294],
-                            [27.704922508801815, 53.93044212805984],
-                            [27.673934377188004, 53.859921373043164],
-                            [27.574525802199076, 53.83548617934562],
-                            [27.46877178095783, 53.852118710423005],
-                            [27.410390949657664, 53.911338937344766],
-                            [27.47307399170134, 53.95398000106455]
-                        ]
-                    ]
-                }
-            },
-        ]
-    };
     map.addSource('polygon-area', {
         'type': 'geojson',
         'data': geoJsonHeartPolygon

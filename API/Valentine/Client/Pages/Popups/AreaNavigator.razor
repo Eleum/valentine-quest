@@ -1,0 +1,26 @@
+﻿<button type="button" class="btn btn-primary" style="position: relative;" onclick="ShowNavigatorToast()">area</button>
+<div aria-live="polite" aria-atomic="true">
+    <div class="toast-container position-absolute p-2 bottom-0 end-0">
+        <div class="toast fade hide bg-light" id="area-navigator" data-bs-autohide="false" data-bs-animation="true">
+            <div class="toast-header">
+                <strong class="me-auto">Completion: </strong>
+                <small>Navigator</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <p class="card-text">
+                    Some quick example text to build on the card title and make up the bulk of
+                    the card's
+                    content.
+                </p>
+                <button class="btn btn-link" id="add-images-button">Add images</button>
+                <button class="btn btn-link" id="upload-images-button">Upload images</button>
+                <input id="images-input" type="file" multiple hidden />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
