@@ -7,6 +7,7 @@ using Valentine.Api.Interfaces;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Valentine.Api.Controllers
 {
@@ -17,18 +18,20 @@ namespace Valentine.Api.Controllers
         private readonly IFileProcessor _processor;
         //private readonly IFileCloudUploader _uploader;
         private readonly IFilesRepository _repository;
+        private readonly IConfiguration _configuration;
 
-        public FilesController(IFileProcessor processor, IFilesRepository repository)
+        public FilesController(IFileProcessor processor, IFilesRepository repository, IConfiguration configuration)
         {
             _processor = processor;
             //_uploader = uploader;
             _repository = repository;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(42);
+            return Ok($"{_configuration["Settings:General:InitializationMessageApiSuccess"]}");
         }
 
         [HttpPost]

@@ -53,7 +53,6 @@ namespace Valentine.Api.Controllers
                 })
             };
 
-            //TODO: global serializer settings
             return Ok(JsonConvert.SerializeObject(response));
         }
 

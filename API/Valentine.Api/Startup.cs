@@ -34,7 +34,6 @@ namespace Valentine.Api
             services.AddScoped<IValentineDbContext, ValentineDbContext>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IMapsRepository, MapsRepository>();
-            services.AddScoped<IMapsRepository, MapsRepository>();
             services.AddScoped<IAreasRepository, AreasRepository>();
             services.AddScoped<IGeoPointsRepository, GeoPointsRepository>();
             services.AddScoped<IFilesRepository, FilesRepository>();
@@ -45,7 +44,7 @@ namespace Valentine.Api
 
             services.AddControllers();
             services.AddCors(options =>
-            {
+            {   
                 options.AddPolicy(Configuration["CorsPolicy"],
                     builder =>
                     {
