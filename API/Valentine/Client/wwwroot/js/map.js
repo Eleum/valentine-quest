@@ -41,6 +41,8 @@
             return turf.inside(point, polygon);
         });
 
+        DotNet.invokeMethodAsync('Valentine.Client', 'SelectAreaAsync', selectedArea.properties.id);
+
         const center = turf.centerOfMass(selectedArea);
         const coordinates = center.geometry.coordinates;
         map.flyTo({

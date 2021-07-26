@@ -15,7 +15,7 @@ namespace Valentine.Client.States
 
         public event AsyncTaskHandler OnNewMapCreatedAsync;
         public event AsyncTaskHandler<MapModel> OnMapSelectedAsync;
-        public event AsyncTaskHandler<AreaModel> OnAreaSelectedAsync;
+        public event AsyncTaskHandler<string> OnAreaSelectedAsync;
 
         public async Task RegisterNewMapCreatedAsync()
         {
@@ -25,6 +25,11 @@ namespace Valentine.Client.States
         public async Task HandleMapSelectionAsync(MapModel map)
         {
             await OnMapSelectedAsync.Invoke(map);
+        }
+        
+        public async Task HandleAreaSelectionAsync(string id)
+        {
+            await OnAreaSelectedAsync.Invoke(id);
         }
     }
 }

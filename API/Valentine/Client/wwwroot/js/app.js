@@ -20,24 +20,23 @@ async function ReturnToAppKeyModalAsync() {
 }
 
 function TriggerAppKeyModal(show) {
-    setTimeout(() => {
-        if (show) {
-            $('#app-key-modal').modal('show')
-            return;
-        }
-
-        $('#app-key-modal').modal('hide')
-    }, 0);
+    $('#app-key-modal').modal(show ? 'show' : 'hide');
 }
 
-function TriggerToastr(elementId, show) {
-    setTimeout(() => {
-        if (show) {
-            $(elementId).toast('show');
+async function TriggerToastr(elementId, show) {
+    const transitionPromise = new Promise((resolve, reject) => {
+        if ($(elementId).is(":hidden") && !show) {
+            resolve();
             return;
         }
-        $(elementId).toast('hide');
-    }, 0);
+
+        $(elementId).on(show ? 'shown.bs.toast' : 'hidden.bs.toast', (event) => {
+            resolve();
+        });
+    });
+
+    $(elementId).toast(show ? 'show' : 'hide');
+    await transitionPromise;
 }
 
 function ShowLayoutToast() {

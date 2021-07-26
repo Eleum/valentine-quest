@@ -17,5 +17,7 @@ namespace Valentine.Application.Interfaces
         public DbSet<Image> Images { get; set; }
 
         Task<int> SaveChangesAsync();
+
+        DbSet<T> Set<T>() where T: File;
     }
 }

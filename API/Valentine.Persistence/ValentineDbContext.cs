@@ -32,5 +32,10 @@ namespace Valentine.Persistence
         {
             return await base.SaveChangesAsync();
         }
+
+        public new DbSet<T> Set<T>() where T : File
+        {
+            return base.Set<T>();
+        }
     }
 }

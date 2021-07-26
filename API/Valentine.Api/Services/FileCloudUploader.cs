@@ -1,28 +1,36 @@
-﻿//using System.Threading.Tasks;
-//using Microsoft.WindowsAzure.Storage.Blob;
-//using Valentine.Api.Interfaces;
+﻿using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Valentine.Api.Interfaces;
 
-//namespace Valentine.Api.Services
-//{
-//    public class FileCloudUploader : IFileCloudUploader
-//    {
-//        private readonly CloudBlobContainer _blobContainer;
+namespace Valentine.Api.Services
+{
+    public class FileCloudUploader : IFileCloudUploader
+    {
+        private readonly IConfiguration _configuration;
 
-//        public FileCloudUploader(CloudBlobContainer blobContainer)
-//        {
-//            _blobContainer = blobContainer;
-//        }
+        public FileCloudUploader(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-//        public async Task<string> Upload(byte[] fileBytes, string fileName, string contentType)
-//        {
-//            if (fileBytes == null || fileBytes.Length == 0)
-//                return null;
+        public async Task<string> Upload(IFormFile file)
+        {
+            var container = new BlobContainerClient(_configuration["valentine-images-connectionstring"], "images");
 
-//            var blob = _blobContainer.GetBlockBlobReference(fileName);
-//            blob.Properties.ContentType = contentType;
+            var createResponse = await container.CreateIfNotExistsAsync();
+            if ((createResponse?.GetRawResponse().Status ?? -1) == 201)
+            {
+                await container.SetAccessPolicyAsync(PublicAccessType.Blob);
+            }
 
-//            await blob.UploadFromByteArrayAsync(fileBytes, 0, fileBytes.Length);
-//            return blob.Uri.ToString();
-//        }
-//    }
-//}
+            var blob = container.GetBlobClient(file.FileName);
+            await blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+            await blob.UploadAsync(file.OpenReadStream(), new BlobHttpHeaders { ContentType = file.ContentType });
+
+            return blob.Uri.ToString();
+        }
+    }
+}

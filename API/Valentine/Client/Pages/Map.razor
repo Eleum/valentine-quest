@@ -10,9 +10,12 @@
 @code {
     private MapModel SelectedMap { get; set; }
 
+    private static Func<string, Task> HandleAreaSelectionAsyncProvider;
+
     protected override async Task OnInitializedAsync()
     {
-        MapInteractionState.OnMapSelectedAsync += (map) => SelectMap(map);
+        MapInteractionState.OnMapSelectedAsync += SelectMap;
+        HandleAreaSelectionAsyncProvider = SelectAreaAsyncInternal;
 
         await Task.Delay(10);
         await JS.InvokeVoidAsync("InitializeControls", Constants.Coordinates.NE, Constants.Coordinates.SW);
@@ -29,8 +32,21 @@
         }
     }
 
+    [JSInvokable]
+    public static async Task SelectAreaAsync(string id)
+    {
+        await HandleAreaSelectionAsyncProvider(id);
+    }
+
+    private async Task SelectAreaAsyncInternal(string id)
+    {
+        await MapInteractionState.HandleAreaSelectionAsync(id);
+        await JS.InvokeVoidAsync("TriggerToastr", "#area-navigator", false);
+        await JS.InvokeVoidAsync("TriggerToastr", "#area-navigator", true);
+    }
+
     public void Dispose()
     {
-        MapInteractionState.OnMapSelectedAsync -= (map) => SelectMap(map);
+        MapInteractionState.OnMapSelectedAsync -= SelectMap;
     }
 }

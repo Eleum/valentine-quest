@@ -20,7 +20,7 @@ namespace Valentine.Application.Repositories
         {
             foreach (var file in files)
             {
-                _dbContext.Images.Add(file as Image);
+                _dbContext.Set<T>().Add(file);
             }
 
             return await _dbContext.SaveChangesAsync();

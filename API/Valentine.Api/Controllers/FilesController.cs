@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Valentine.Shared.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Valentine.Api.Interfaces;
 using Valentine.Application.Interfaces;
 using Valentine.Domain;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Valentine.Shared.Contracts.Requests;
 
 namespace Valentine.Api.Controllers
 {
@@ -15,16 +15,14 @@ namespace Valentine.Api.Controllers
     [Route("api/[controller]")]
     public class FilesController : ControllerBase
     {
-        private readonly IFileProcessor _processor;
-        //private readonly IFileCloudUploader _uploader;
-        private readonly IFilesRepository _repository;
+        private readonly IFileCloudUploader _uploader;
+        private readonly IFilesRepository _filesRepository;
         private readonly IConfiguration _configuration;
 
-        public FilesController(IFileProcessor processor, IFilesRepository repository, IConfiguration configuration)
+        public FilesController(IFileCloudUploader uploader, IFilesRepository filesRepository, IConfiguration configuration)
         {
-            _processor = processor;
-            //_uploader = uploader;
-            _repository = repository;
+            _uploader = uploader;
+            _filesRepository = filesRepository;
             _configuration = configuration;
         }
 
@@ -35,35 +33,20 @@ namespace Valentine.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveFiles([FromForm]FilesUploadRequest request)
+        public async Task<IActionResult> SaveFiles([FromForm]StoryUploadRequest request)
         {
-            if (request.Files.Length == 0)
+            if (!request.Files.Any()) 
                 return NoContent();
 
             var images = new List<Image>();
-
-            for (int i = 0; i < request.Files?.Length; i++)
-            {
-                var file = (IFormFile)request.Files[i];
-                var fileId = Guid.Parse(request.Ids[i]);
-                var areaId = Guid.Parse(request.AreaId);
-
-                var bytes = _processor.ConvertFileToByteArray(file);
-                //var url = await _uploader.Upload(bytes, file.FileName, file.ContentType);
-
-                //images.Add(new Image(fileId, url, areaId));
-            }
-
-            try
-            {
-                await _repository.AddFiles(images);
-            }
-            catch (Exception)
-            {
-
-            }
             
+            foreach (var file in request.Files)
+            {
+                var url = await _uploader.Upload(file);
+                images.Add(new Image(Guid.NewGuid(), url, Guid.Parse(request.AreaId)));
+            }
 
+            await _filesRepository.AddFiles(images);
             return Ok();
         }
     }

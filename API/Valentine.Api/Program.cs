@@ -34,9 +34,10 @@ namespace Valentine.Api
                                     kv.SetCredential(!context.HostingEnvironment.IsDevelopment() 
                                         ? new DefaultAzureCredential() 
                                         : new ClientSecretCredential(
-                                        settings["ValentineTenantId"],
-                                        settings["ValentineClientId"],
-                                        settings["ValentineClientSecret"]));
+                                            settings["ValentineTenantId"],
+                                            settings["ValentineClientId"],
+                                            settings["ValentineClientSecret"])
+                                        );
                                 });
                         });
                     }).UseStartup<Startup>();

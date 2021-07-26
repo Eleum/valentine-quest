@@ -36,9 +36,8 @@ namespace Valentine.Api
             services.AddScoped<IMapsRepository, MapsRepository>();
             services.AddScoped<IAreasRepository, AreasRepository>();
             services.AddScoped<IGeoPointsRepository, GeoPointsRepository>();
+            services.AddScoped<IFileCloudUploader, FileCloudUploader>();
             services.AddScoped<IFilesRepository, FilesRepository>();
-            services.AddScoped<IFileProcessor, FileProcessor>();
-            //services.AddScoped<IFileCloudUploader, FileCloudUploader>();
 
             //services.RegisterAzureBlobStorage(Configuration);
 
