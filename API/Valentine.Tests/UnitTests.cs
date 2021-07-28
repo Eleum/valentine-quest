@@ -67,10 +67,11 @@ namespace Valentine.Tests
                     new Polygon
                     {
                         Type = FeatureType.Feature,
-                        Geometry = new Geometry(FeatureType.Polygon, Enumerable.Repeat(new GeoPointCoordsCollection(new List<GeoPointCoordinates>
-                        {
-                            new GeoPointCoordinates(2.1, 5.2)
-                        }), 1))
+                        Geometry = new Geometry(FeatureType.Polygon, Enumerable.Repeat(
+                            new GeoPointCoordsCollection(new List<GeoPointCoordinates>
+                            {
+                                new GeoPointCoordinates(2.1, 5.2)
+                            }), 1))
                     }
                 }
             };
@@ -94,10 +95,9 @@ namespace Valentine.Tests
         public void Geometry_Serialization_Correct()
         {
             var json = "{\"Coordinates\":[[[27.441732505045678,53.93265949258276]]],\"Type\":\"Polygon\"}";
-            var obj = new Geometry(FeatureType.Polygon,
-                Enumerable.Repeat(
-                    new GeoPointCoordsCollection(
-                        new List<GeoPointCoordinates> { new GeoPointCoordinates(27.441732505045678, 53.93265949258276) }), 1));
+            var obj = new Geometry(FeatureType.Polygon, Enumerable.Repeat(
+                new GeoPointCoordsCollection(
+                    new List<GeoPointCoordinates> { new GeoPointCoordinates(27.441732505045678, 53.93265949258276) }), 1));
 
             var result = JsonSerializer.Serialize(obj);
 

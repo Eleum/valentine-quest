@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Valentine.Shared.Contracts.Requests;
 using Valentine.Shared.Contracts.Responses;
 using Valentine.Application.Interfaces;
@@ -36,10 +34,11 @@ namespace Valentine.Api.Controllers
             var areas = areasData.Select(x => new AreaModel
             {
                 Id = x.Id,
+                Progress = x.Progress,
                 GeoPoints = x.GeoPoints.Select(x => new GeoPointModel(x.AreaId.ToString(), x.Index, x.Latitude, x.Longitude))
             });
 
-            return Ok(JsonConvert.SerializeObject(new AreasResponse { Areas = areas }));
+            return Ok(JsonSerializer.Serialize(new AreasResponse { Areas = areas }));
         }
 
         [HttpPost]

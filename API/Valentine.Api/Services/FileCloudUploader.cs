@@ -18,7 +18,9 @@ namespace Valentine.Api.Services
 
         public async Task<string> Upload(IFormFile file)
         {
-            var container = new BlobContainerClient(_configuration["valentine-images-connectionstring"], "images");
+            var container = new BlobContainerClient(
+                _configuration["valentine-images-connectionstring"], 
+                _configuration["Settings:Images:ImagesBlobName"]);
 
             var createResponse = await container.CreateIfNotExistsAsync();
             if ((createResponse?.GetRawResponse().Status ?? -1) == 201)

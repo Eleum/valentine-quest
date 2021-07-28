@@ -11,4 +11,12 @@ namespace Valentine.Client.Enums
         Loaded,
         Rendering
     }
+
+    internal enum ImageUploadingState
+    {
+        Idle,
+        Uploading,
+        Uploaded,
+        Error
+    }
 }

@@ -9,7 +9,7 @@ namespace Valentine.Domain
 
         public Guid UserId { get; init; }
 
-        public List<Area> Areas { get; set; }
+        public ICollection<Area> Areas { get; set; }
 
         public string Title { get; set; }
 

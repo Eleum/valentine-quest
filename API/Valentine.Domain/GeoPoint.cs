@@ -10,6 +10,8 @@ namespace Valentine.Domain
 
         public Guid AreaId { get; set; }
 
+        public Area Area { get; set; }
+
         public int Index { get; set; }
 
         public double Latitude { get; set; }

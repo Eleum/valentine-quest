@@ -1,5 +1,5 @@
-﻿@using System.Drawing;
-@using System.Net.Http.Headers
+﻿@using System.Net.Http.Headers
+@using Valentine.Client.Enums
 @using Valentine.Client.FormModels
 @using Valentine.Client.States
 @using Valentine.Client.Helpers
@@ -25,9 +25,8 @@
                     <InputText @bind-Value="StoryUploadModel.AreaId" hidden />
                     <InputFile id="images-input" OnChange="LimitFilesUpload" multiple hidden />
                     <button type="button" class="btn btn-link" id="add-images-button" onclick="$('#images-input').trigger('click')">Select images</button>
-                    <button type="submit" class="btn btn-outline-primary" disabled="@(StoryUploadModel.AreaId is null)">Upload images</button>
+                    <button type="submit" class="btn btn-outline-primary" disabled="@(StoryUploadModel.AreaId is null || UploadingState == ImageUploadingState.Uploading)">Upload images</button>
                 </EditForm>
-                <input id="images-input" type="file" multiple hidden />
             </div>
         </div>
     </div>
@@ -41,6 +40,7 @@
     private StoryUploadModel StoryUploadModel = new();
 
     private string StatusCode { get; set; } = string.Empty;
+    private ImageUploadingState UploadingState { get; set; } = ImageUploadingState.Idle;
 
     protected override void OnInitialized()
     {
@@ -69,6 +69,7 @@
     public async Task UploadFiles()
     {
         StatusCode = string.Empty;
+        UploadingState = ImageUploadingState.Uploading;
 
         using var content = new MultipartFormDataContent();
         content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
@@ -86,8 +87,11 @@
         if (!response.IsSuccessStatusCode)
         {
             StatusCode = response.StatusCode.ToString();
+            UploadingState = ImageUploadingState.Error;
             return;
         }
+
+        UploadingState = ImageUploadingState.Uploaded;
     }
 
     public void Dispose()

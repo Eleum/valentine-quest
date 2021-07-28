@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Valentine.Shared.Contracts.Requests;
 using Valentine.Shared.Contracts.Responses;
 using Valentine.Application.Interfaces;
@@ -40,7 +38,7 @@ namespace Valentine.Api.Controllers
             }
             catch (InvalidOperationException e)
             {
-                return BadRequest(JsonConvert.SerializeObject(e.Message));
+                return BadRequest(JsonSerializer.Serialize(e.Message));
             }
 
             var userMapsCollection = await _mapsRepository.GetUserMapsAsync(user.Id);
@@ -49,11 +47,11 @@ namespace Valentine.Api.Controllers
                 UserId = user.Id,
                 Maps = userMapsCollection.Select(x => new MapModel(x.Id.ToString(), x.Title, x.Description, x.CreatedAt) 
                 { 
-                    OverallProgress = (x.Areas?.Count ?? 0) == 0 ? -1D : x.Areas.Sum(a => a.Progress) / x.Areas.Count * 100
+                    OverallProgress = (x.Areas?.Count ?? 0) == 0 ? -1D : x.Areas.Sum(a => a.Progress) / x.Areas.Count
                 })
             };
 
-            return Ok(JsonConvert.SerializeObject(response));
+            return Ok(JsonSerializer.Serialize(response));
         }
 
         [HttpPost]

@@ -22,7 +22,8 @@ namespace Valentine.Application.Repositories
         {
             return await _dbContext.Areas
                 .Where(x => x.MapId == mapId)
-                .Include(p => p.GeoPoints)
+                .Include(a => a.GeoPoints)
+                .Include(a => a.Files)
                 .ToListAsync();
         }
 

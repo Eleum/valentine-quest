@@ -10,6 +10,8 @@ namespace Valentine.Shared.Contracts.Models
     {
         public Guid Id { get; set; }
 
+        public double Progress { get; set; }
+
         public IEnumerable<GeoPointModel> GeoPoints { get; set; }
     }
 }

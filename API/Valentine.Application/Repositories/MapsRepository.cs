@@ -19,7 +19,10 @@ namespace Valentine.Application.Repositories
 
         public async Task<IEnumerable<Map>> GetUserMapsAsync(Guid userId)
         {
-            return await _dbContext.Maps.Where(x => x.UserId == userId).Include(a => a.Areas).ToListAsync();        
+            return await _dbContext.Maps.Where(x => x.UserId == userId)
+                .Include(m => m.Areas)
+                .ThenInclude(a => a.Files)
+                .ToListAsync();
         }
 
         public async Task<int> SaveMapAsync(Map map)

@@ -25,7 +25,24 @@ namespace Valentine.Persistence
             {
                 options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
             });
-            base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Area>()
+                .HasOne(a => a.Map)
+                .WithMany(m => m.Areas)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<GeoPoint>()
+                .HasOne(p => p.Area)
+                .WithMany(a => a.GeoPoints)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<File>()
+                .HasOne(p => p.Area)
+                .WithMany(a => a.Files)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public async Task<int> SaveChangesAsync()

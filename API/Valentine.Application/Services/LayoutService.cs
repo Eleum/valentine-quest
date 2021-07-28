@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Valentine.Application.Enums;
 using Valentine.Application.Helpers;
 using Valentine.Application.Interfaces;
 using Valentine.Application.Models;
 using Valentine.Shared.Contracts.Models;
-using Valentine.Shared.Contracts.Responses;
 
 namespace Valentine.Application.Services
 {
@@ -31,6 +27,7 @@ namespace Valentine.Application.Services
             return areasData.Select(x => new Area
             {
                 Id = x.Id.ToString(),
+                Progress = x.Progress,
                 Points = new GeoPointCoordsCollection(x.GeoPoints
                     .OrderByDescending(p => p.Index)
                     .Select(p => new GeoPointCoordinates(p.Latitude, p.Longitude)))
@@ -46,7 +43,7 @@ namespace Valentine.Application.Services
                 Properties = new Dictionary<string, object>
                 {
                     { Constants.Properties.ID, x.Id },
-                    { Constants.Properties.COMPLETION, new Random().Next(0, 50) }
+                    { Constants.Properties.COMPLETION, x.Progress }
                 }
             });
         }
